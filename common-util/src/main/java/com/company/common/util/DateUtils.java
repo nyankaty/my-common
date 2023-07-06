@@ -12,6 +12,10 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
 public class DateUtils {
 
+    private DateUtils() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static Date yesterday() {
         return offsiteDate(new Date(), Calendar.DAY_OF_YEAR, -1);
     }
@@ -67,7 +71,4 @@ public class DateUtils {
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 
-    private DateUtils() {
-        throw new IllegalStateException("Utility class");
-    }
 }

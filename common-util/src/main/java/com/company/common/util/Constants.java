@@ -4,6 +4,10 @@ import java.util.List;
 
 public final class Constants {
 
+    private Constants() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static final String ANONYMOUS_ACCOUNT = "anonymous";
     public static final String AUTHORITY_TYPE = "auth_type";
     public static final String USER_ID = "user_id";
@@ -18,7 +22,4 @@ public final class Constants {
 
     public static final List<String> EXTENSIONS = List.of("bmp", "jpg", "png", "jpeg");
 
-    private Constants() {
-        throw new IllegalStateException("Utility class");
-    }
 }

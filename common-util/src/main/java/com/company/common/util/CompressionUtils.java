@@ -1,6 +1,7 @@
 package com.company.common.util;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -8,8 +9,10 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
-@Slf4j
+
 public class CompressionUtils {
+
+    private static final Logger log = LoggerFactory.getLogger(CompressionUtils.class);
 
     private CompressionUtils() {}
 
@@ -28,8 +31,8 @@ public class CompressionUtils {
         outputStream.close();
         byte[] output = outputStream.toByteArray();
 
-        log.debug("Original: " + data.length / 1024 + " Kb");
-        log.debug("Compressed: " + output.length / 1024 + " Kb");
+        log.debug("Original: {} Kb", data.length / 1024);
+        log.debug("Compressed: {} Kb", output.length / 1024);
         return output;
     }
 
@@ -46,8 +49,8 @@ public class CompressionUtils {
         outputStream.close();
         byte[] output = outputStream.toByteArray();
 
-        log.debug("Original: " + data.length);
-        log.debug("Compressed: " + output.length);
+        log.debug("Original: {} Kb", data.length / 1024);
+        log.debug("Compressed: {} Kb", output.length / 1024);
         return output;
     }
 }

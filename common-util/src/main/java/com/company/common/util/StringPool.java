@@ -2,6 +2,10 @@ package com.company.common.util;
 
 public final class StringPool {
 
+    private StringPool() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static final String AMPERSAND = "&";
     public static final String AMPERSAND_ENCODED = "&amp;";
     public static final String APOSTROPHE = "'";
@@ -107,7 +111,4 @@ public final class StringPool {
         }
     }
 
-    private StringPool() {
-        throw new IllegalStateException("Utility class");
-    }
 }
