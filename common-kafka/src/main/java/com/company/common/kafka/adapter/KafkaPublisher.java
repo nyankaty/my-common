@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.internals.RecordHeader;
@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.CompletableToListenableFutureAdapter;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 @ConditionalOnProperty(
@@ -34,6 +34,7 @@ public abstract class KafkaPublisher {
         this.kafkaTemplate = kafkaTemplate;
     }
 
+    @SuppressWarnings("java:S1192")
     private <T> void sendMessageAsync(T data, final String topic, final ListenableFutureCallback<String> callback) {
         final String message;
         try {
@@ -43,21 +44,22 @@ public abstract class KafkaPublisher {
             return;
         }
 
-        ListenableFuture<SendResult<String, String>> future = this.kafkaTemplate.send(topic, message);
         if (callback != null) {
-            future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+            CompletableFuture<SendResult<String, String>> future = this.kafkaTemplate.send(topic, message);
+            new CompletableToListenableFutureAdapter<>(future).addCallback(new ListenableFutureCallback<>() {
+                @Override
                 public void onSuccess(SendResult<String, String> result) {
-                    KafkaPublisher.log.info("===> Sent message=[" + message + "] with offset=[" + result.getRecordMetadata().offset() + "] to topic: " + topic + " SUCCESS !!!");
+                    log.info("===> Sent message=[{}] with offset=[{}] to topic: {} SUCCESS !!!", message, result.getRecordMetadata().offset(), topic);
                     callback.onSuccess(message);
                 }
 
+                @Override
                 public void onFailure(Throwable ex) {
-                    KafkaPublisher.log.info("xxxx> Unable to send message=[" + message + "] to topic: " + topic + " FAIL !!! \n Due to : " + ex.getMessage(), ex);
+                    log.info("xxx> Unable to send message=[" + message + "] to topic: " + topic + " FAIL !!! \n Due to : " + ex.getMessage(), ex);
                     callback.onFailure(ex);
                 }
             });
         }
-
     }
 
     public <T> void pushAsync(T payload, String topic, ListenableFutureCallback<String> callback) {
@@ -65,17 +67,18 @@ public abstract class KafkaPublisher {
     }
 
     public <T> void pushAsync(T payload, String topic) {
-        this.sendMessageAsync(payload, topic, (ListenableFutureCallback)null);
+        this.sendMessageAsync(payload, topic, null);
     }
 
     public <T> boolean pushSync(T payload, String topic) {
-        return this.sendMessageSync(payload, topic, new HashMap(), (Integer)null);
+        return this.sendMessageSync(payload, topic, new HashMap<>(), null);
     }
 
     public <T> boolean pushSync(T payload, String topic, Map<String, byte[]> headers, Integer partition) {
         return this.sendMessageSync(payload, topic, headers, partition);
     }
 
+    @SuppressWarnings("java:S1192")
     private <T> boolean sendMessageSync(T data, final String topic, Map<String, byte[]> headers, Integer partition) {
         final String message;
         try {
@@ -85,30 +88,27 @@ public abstract class KafkaPublisher {
             return false;
         }
 
-        ProducerRecord rc;
+        ProducerRecord<String, String> rc;
         if (partition == null) {
-            rc = new ProducerRecord(topic, message);
+            rc = new ProducerRecord<>(topic, message);
         } else {
-            rc = new ProducerRecord(topic, partition, "", message);
+            rc = new ProducerRecord<>(topic, partition, "", message);
         }
 
         if (!headers.isEmpty()) {
-            Iterator var7 = headers.entrySet().iterator();
-
-            while(var7.hasNext()) {
-                Map.Entry<String, byte[]> item = (Map.Entry)var7.next();
-                rc.headers().add(new RecordHeader((String)item.getKey(), (byte[])item.getValue()));
-            }
+            headers.forEach((k, v) -> rc.headers().add(new RecordHeader(k, v)));
         }
 
-        ListenableFuture<SendResult<String, String>> future = this.kafkaTemplate.send(rc);
-        future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+        CompletableFuture<SendResult<String, String>> future = this.kafkaTemplate.send(rc);
+        new CompletableToListenableFutureAdapter<>(future).addCallback(new ListenableFutureCallback<>() {
+            @Override
             public void onSuccess(SendResult<String, String> result) {
-                KafkaPublisher.log.info("===> Sent message=[" + message + "] with offset=[" + result.getRecordMetadata().offset() + "] to topic: " + topic + " SUCCESS !!!");
+                log.info("===> Sent message=[{}] with offset=[{}] to topic: {} SUCCESS !!!", message, result.getRecordMetadata().offset(), topic);
             }
 
+            @Override
             public void onFailure(Throwable ex) {
-                KafkaPublisher.log.info("xxxx> Unable to send message=[" + message + "] to topic: " + topic + " FAIL !!! \n Due to : " + ex.getMessage(), ex);
+                log.info("xxx> Unable to send message=[" + message + "] to topic: " + topic + " FAIL !!! \n Due to : " + ex.getMessage(), ex);
             }
         });
 
