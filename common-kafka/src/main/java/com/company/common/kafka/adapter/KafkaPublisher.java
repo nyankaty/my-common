@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.internals.RecordHeader;
@@ -14,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.util.concurrent.CompletableToListenableFutureAdapter;
+import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 @ConditionalOnProperty(
@@ -44,16 +43,14 @@ public abstract class KafkaPublisher {
             return;
         }
 
+        ListenableFuture<SendResult<String, String>> future = (ListenableFuture<SendResult<String, String>>) this.kafkaTemplate.send(topic, message);
         if (callback != null) {
-            CompletableFuture<SendResult<String, String>> future = this.kafkaTemplate.send(topic, message);
-            new CompletableToListenableFutureAdapter<>(future).addCallback(new ListenableFutureCallback<>() {
-                @Override
+            future.addCallback(new ListenableFutureCallback<>() {
                 public void onSuccess(SendResult<String, String> result) {
                     log.info("===> Sent message=[{}] with offset=[{}] to topic: {} SUCCESS !!!", message, result.getRecordMetadata().offset(), topic);
                     callback.onSuccess(message);
                 }
 
-                @Override
                 public void onFailure(Throwable ex) {
                     log.info("xxx> Unable to send message=[" + message + "] to topic: " + topic + " FAIL !!! \n Due to : " + ex.getMessage(), ex);
                     callback.onFailure(ex);
@@ -99,14 +96,12 @@ public abstract class KafkaPublisher {
             headers.forEach((k, v) -> rc.headers().add(new RecordHeader(k, v)));
         }
 
-        CompletableFuture<SendResult<String, String>> future = this.kafkaTemplate.send(rc);
-        new CompletableToListenableFutureAdapter<>(future).addCallback(new ListenableFutureCallback<>() {
-            @Override
+        ListenableFuture<SendResult<String, String>> future = (ListenableFuture<SendResult<String, String>>) this.kafkaTemplate.send(rc);
+        future.addCallback(new ListenableFutureCallback<>() {
             public void onSuccess(SendResult<String, String> result) {
                 log.info("===> Sent message=[{}] with offset=[{}] to topic: {} SUCCESS !!!", message, result.getRecordMetadata().offset(), topic);
             }
 
-            @Override
             public void onFailure(Throwable ex) {
                 log.info("xxx> Unable to send message=[" + message + "] to topic: " + topic + " FAIL !!! \n Due to : " + ex.getMessage(), ex);
             }

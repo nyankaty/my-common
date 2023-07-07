@@ -14,14 +14,14 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <projectreactor.verrsion>3.3.2.RELEASE</projectreactor.verrsion>
+        <projectreactor.version>3.3.2.RELEASE</projectreactor.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-core</artifactId>
-            <version>${projectreactor.verrsion}</version>
+            <version>${projectreactor.version}</version>
         </dependency>
     </dependencies>
 
