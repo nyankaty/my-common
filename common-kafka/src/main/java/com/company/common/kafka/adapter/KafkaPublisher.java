@@ -33,7 +33,6 @@ public abstract class KafkaPublisher {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    @SuppressWarnings("java:S1192")
     private <T> void sendMessageAsync(T data, final String topic, final ListenableFutureCallback<String> callback) {
         final String message;
         try {
@@ -43,7 +42,7 @@ public abstract class KafkaPublisher {
             return;
         }
 
-        ListenableFuture<SendResult<String, String>> future = (ListenableFuture<SendResult<String, String>>) this.kafkaTemplate.send(topic, message);
+        ListenableFuture<SendResult<String, String>> future = this.kafkaTemplate.send(topic, message);
         if (callback != null) {
             future.addCallback(new ListenableFutureCallback<>() {
                 public void onSuccess(SendResult<String, String> result) {
@@ -75,7 +74,6 @@ public abstract class KafkaPublisher {
         return this.sendMessageSync(payload, topic, headers, partition);
     }
 
-    @SuppressWarnings("java:S1192")
     private <T> boolean sendMessageSync(T data, final String topic, Map<String, byte[]> headers, Integer partition) {
         final String message;
         try {
@@ -96,7 +94,7 @@ public abstract class KafkaPublisher {
             headers.forEach((k, v) -> rc.headers().add(new RecordHeader(k, v)));
         }
 
-        ListenableFuture<SendResult<String, String>> future = (ListenableFuture<SendResult<String, String>>) this.kafkaTemplate.send(rc);
+        ListenableFuture<SendResult<String, String>> future = this.kafkaTemplate.send(rc);
         future.addCallback(new ListenableFutureCallback<>() {
             public void onSuccess(SendResult<String, String> result) {
                 log.info("===> Sent message=[{}] with offset=[{}] to topic: {} SUCCESS !!!", message, result.getRecordMetadata().offset(), topic);
