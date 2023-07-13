@@ -1,4 +1,4 @@
-package com.company.common.cache.implementation;
+package com.company.common.cache.external.implementation;
 
 import java.lang.reflect.Method;
 import org.springframework.cache.interceptor.KeyGenerator;

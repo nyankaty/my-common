@@ -1,9 +1,9 @@
-package com.company.common.cache.implementation;
+package com.company.common.cache.external.implementation;
 
-import com.company.common.cache.customizer.RedisConnectionCustomizer;
-import com.company.common.cache.customizer.RedisConnectionFactoryCustomizer;
-import com.company.common.cache.port.ExternalCacheTemplate;
-import com.company.common.cache.properties.RedisCacheConfigurationProperties;
+import com.company.common.cache.external.customizer.RedisConnectionCustomizer;
+import com.company.common.cache.external.customizer.RedisConnectionFactoryCustomizer;
+import com.company.common.cache.external.port.ExternalCacheTemplate;
+import com.company.common.cache.external.properties.RedisCacheConfigurationProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

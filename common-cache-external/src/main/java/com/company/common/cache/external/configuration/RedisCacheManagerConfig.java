@@ -1,11 +1,11 @@
-package com.company.common.cache.configuration;
+package com.company.common.cache.external.configuration;
 
 import java.util.Map;
 
-import com.company.common.cache.customizer.RedisCacheConfigurationCustomizer;
-import com.company.common.cache.customizer.RedisCacheManagerCustomizer;
-import com.company.common.cache.customizer.RedisCacheWriterCustomizer;
-import com.company.common.cache.customizer.RedisConnectionFactoryCustomizer;
+import com.company.common.cache.external.customizer.RedisCacheConfigurationCustomizer;
+import com.company.common.cache.external.customizer.RedisCacheManagerCustomizer;
+import com.company.common.cache.external.customizer.RedisCacheWriterCustomizer;
+import com.company.common.cache.external.customizer.RedisConnectionFactoryCustomizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
@@ -20,12 +20,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import com.company.common.cache.properties.RedisCacheConfigurationProperties;
+import com.company.common.cache.external.properties.RedisCacheConfigurationProperties;
 
 @Configuration
 @EnableCaching
 @ComponentScan({"com.company.common"})
-@ConfigurationPropertiesScan({"com.company.common.cache.properties"})
+@ConfigurationPropertiesScan({"com.company.common.cache.external.properties"})
 @EnableAutoConfiguration(
         exclude = {FreeMarkerAutoConfiguration.class, RedisAutoConfiguration.class, CacheAutoConfiguration.class}
 )

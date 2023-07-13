@@ -1,4 +1,4 @@
-package com.company.common.cache.properties;
+package com.company.common.cache.external.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

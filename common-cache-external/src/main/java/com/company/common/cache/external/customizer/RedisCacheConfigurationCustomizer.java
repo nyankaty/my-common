@@ -1,6 +1,6 @@
-package com.company.common.cache.customizer;
+package com.company.common.cache.external.customizer;
 
-import com.company.common.cache.properties.RedisCacheConfigurationProperties;
+import com.company.common.cache.external.properties.RedisCacheConfigurationProperties;
 import java.time.Duration;
 import java.util.Map;
 import java.util.stream.Collectors;

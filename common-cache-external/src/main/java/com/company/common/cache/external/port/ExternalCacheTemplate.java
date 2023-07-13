@@ -1,4 +1,4 @@
-package com.company.common.cache.port;
+package com.company.common.cache.external.port;
 
 import java.util.List;
 import java.util.Set;
