@@ -12,12 +12,11 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
-
 import java.time.Duration;
 import java.util.function.Consumer;
 
-
 public class WebClientTemplate implements ClientTemplate {
+
     private static final Logger log = LoggerFactory.getLogger(WebClientTemplate.class);
 
     public WebClientTemplate() {
@@ -26,7 +25,9 @@ public class WebClientTemplate implements ClientTemplate {
 
     public <R> Flux<R> get(String uri, Consumer<HttpHeaders> headersConsumer, int timeOutSeconds, Class<R> responseClass, Consumer<? super R> consumer) {
         log.info("Start non-blocking GET uri: {}", uri);
-        Flux<R> flux = WebClient.create().get().uri(uri, new Object[0]).headers(headersConsumer).retrieve().bodyToFlux(responseClass).timeout(Duration.ofSeconds((long)timeOutSeconds));
+        Flux<R> flux = WebClient.create().get().uri(uri).headers(headersConsumer)
+                .retrieve().bodyToFlux(responseClass)
+                .timeout(Duration.ofSeconds(timeOutSeconds));
         if (consumer != null) {
             flux.subscribe(consumer);
         }
@@ -37,7 +38,9 @@ public class WebClientTemplate implements ClientTemplate {
 
     public <B, R> Flux<R> post(String uri, Consumer<HttpHeaders> headersConsumer, int timeOutSeconds, B body, Class<B> bodyClass, Class<R> responseClass, Consumer<? super R> consumer) {
         log.info("Start non-blocking POST uri: {}", uri);
-        Flux<R> flux = ((WebClient.RequestBodySpec)((WebClient.RequestBodySpec)WebClient.create().post().uri(uri, new Object[0])).headers(headersConsumer)).body(Flux.just(body), bodyClass).retrieve().bodyToFlux(responseClass).timeout(Duration.ofSeconds((long)timeOutSeconds));
+        Flux<R> flux = WebClient.create().post().uri(uri).headers(headersConsumer).body(Flux.just(body), bodyClass)
+                .retrieve().bodyToFlux(responseClass)
+                .timeout(Duration.ofSeconds(timeOutSeconds));
         if (consumer != null) {
             flux.subscribe(consumer);
         }
@@ -70,4 +73,3 @@ public class WebClientTemplate implements ClientTemplate {
         return response.getBody();
     }
 }
-

@@ -20,9 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-
 import com.company.common.cache.properties.RedisCacheConfigurationProperties;
-
 
 @Configuration
 @EnableCaching

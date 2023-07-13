@@ -8,6 +8,7 @@ public final class Constants {
         throw new IllegalStateException("Utility class");
     }
 
+    public static final String BASE_PACKAGES = "com.company.common";
     public static final String ANONYMOUS_ACCOUNT = "anonymous";
     public static final String AUTHORITY_TYPE = "auth_type";
     public static final String USER_ID = "user_id";

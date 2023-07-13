@@ -2,10 +2,9 @@ package com.company.common.cache.customizer;
 
 import com.company.common.cache.properties.RedisCacheConfigurationProperties;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
@@ -34,14 +33,10 @@ public class RedisCacheConfigurationCustomizer {
     }
 
     public Map<String, RedisCacheConfiguration> getRedisCacheConfigurations() {
-        Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap();
-        Iterator var4 = this.redisCacheConfigurationProperties.getCacheExpirations().entrySet().iterator();
-
-        while(var4.hasNext()) {
-            Map.Entry<String, Long> cacheNameAndTimeout = (Map.Entry)var4.next();
-            cacheConfigurations.put(cacheNameAndTimeout.getKey(), this.getDefaultRedisCacheConfiguration().entryTtl(Duration.ofSeconds((Long)cacheNameAndTimeout.getValue())));
-        }
-
-        return cacheConfigurations;
+        return this.redisCacheConfigurationProperties.getCacheExpirations().entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                    Map.Entry::getKey,
+                    entry -> this.getDefaultRedisCacheConfiguration().entryTtl(Duration.ofSeconds(entry.getValue()))));
     }
 }

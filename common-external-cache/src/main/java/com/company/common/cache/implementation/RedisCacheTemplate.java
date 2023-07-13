@@ -133,7 +133,7 @@ public class RedisCacheTemplate implements ExternalCacheTemplate {
     private String putValueStr(String cacheName, String keyGen, String valueStr) {
         this.redisTemplate.opsForValue().set(keyGen, valueStr);
         if (this.externalCacheProp.getCacheExpirations().get(cacheName) != null && !this.externalCacheProp.getCacheExpirations().isEmpty()) {
-            this.redisConnection.expire(keyGen.getBytes(StandardCharsets.UTF_8), (Long)this.externalCacheProp.getCacheExpirations().get(cacheName));
+            this.redisConnection.expire(keyGen.getBytes(StandardCharsets.UTF_8), this.externalCacheProp.getCacheExpirations().get(cacheName));
         } else if (this.externalCacheProp.getCacheDefaultExpiration() != null) {
             this.redisConnection.expire(keyGen.getBytes(StandardCharsets.UTF_8), this.externalCacheProp.getCacheDefaultExpiration());
         }

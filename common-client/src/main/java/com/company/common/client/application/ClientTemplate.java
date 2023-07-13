@@ -2,7 +2,6 @@ package com.company.common.client.application;
 
 import org.springframework.http.HttpHeaders;
 import reactor.core.publisher.Flux;
-
 import java.util.function.Consumer;
 
 public interface ClientTemplate {
