@@ -13,7 +13,7 @@ public class FullKeyGenerator implements KeyGenerator {
     }
 
     @NotNull
-    public Object generate(Object target, Method method, Object @NotNull ... params) {
+    public Object generate(Object target, Method method, @NotNull Object... params) {
         return target.getClass().getSimpleName() + "_" + method.getName() + "_" + StringUtils.arrayToDelimitedString(params, "_");
     }
 }
