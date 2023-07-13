@@ -6,11 +6,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+@Configuration
+@Primary
 @ConfigurationProperties(
         prefix = "spring.kafka"
 )
-@Configuration
-@Primary
 @ConditionalOnProperty(
         value = {"spring.kafka.enabled"},
         havingValue = "true"
