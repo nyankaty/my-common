@@ -9,7 +9,6 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
-
 public class CompressionUtils {
 
     private static final Logger log = LoggerFactory.getLogger(CompressionUtils.class);

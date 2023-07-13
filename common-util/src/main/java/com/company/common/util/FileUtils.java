@@ -1,16 +1,9 @@
 package com.company.common.util;
 
-import java.util.UUID;
-
 public final class FileUtils {
 
     private FileUtils() {
         throw new IllegalStateException("Utility class");
-    }
-
-    public static String genExternalId() {
-        // need fix for add partition info
-        return UUID.randomUUID().toString();
     }
 
     public static String getExtension(String fileName) {

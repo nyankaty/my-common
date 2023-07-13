@@ -1,5 +1,6 @@
 package com.company.common.util;
 
+@SuppressWarnings("java:S2386")
 public final class StringPool {
 
     private StringPool() {
