@@ -1,13 +1,15 @@
-package com.company.common.util;
+package com.company.common.spring.utils;
 
-public final class FileUtils {
+import com.company.common.spring.constant.Constants;
 
-    private FileUtils() {
+public final class FileUtil {
+
+    private FileUtil() {
         throw new IllegalStateException("Utility class");
     }
 
     public static String getExtension(String fileName) {
-        String filename = FileUtils.getSafeFileName(fileName);
+        String filename = FileUtil.getSafeFileName(fileName);
         int last = filename.lastIndexOf('.');
         return filename.substring(last + 1).toLowerCase();
     }
@@ -24,7 +26,7 @@ public final class FileUtils {
     }
 
     public static String getActualFileName(String fileName) {
-        String filename = FileUtils.getSafeFileName(fileName);
+        String filename = FileUtil.getSafeFileName(fileName);
         int last = filename.lastIndexOf(StringPool.DOT);
         return filename.substring(0, last);
     }

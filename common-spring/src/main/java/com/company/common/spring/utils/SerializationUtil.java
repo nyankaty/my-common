@@ -1,4 +1,4 @@
-package com.company.common.util;
+package com.company.common.spring.utils;
 
 import io.protostuff.LinkedBuffer;
 import io.protostuff.ProtobufIOUtil;
@@ -10,19 +10,19 @@ import org.springframework.objenesis.ObjenesisStd;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class SerializationUtils {
+public class SerializationUtil {
 
     private static final Map<Class<?>, Schema<?>> cachedSchema = new ConcurrentHashMap<>();
     private static final Objenesis objenesis = new ObjenesisStd(true);
 
-    private SerializationUtils() {}
+    private SerializationUtil() {}
 
     public static <T> byte[] serializeToByte(T obj) {
         Class<T> cls = (Class<T>) obj.getClass();
         LinkedBuffer buffer = LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE);
         try {
             Schema<T> schema = getSchema(cls);
-            return CompressionUtils.compress(ProtobufIOUtil.toByteArray(obj, schema, buffer));
+            return CompressionUtil.compress(ProtobufIOUtil.toByteArray(obj, schema, buffer));
         } catch (Exception e) {
             throw new IllegalStateException(e.getMessage(), e);
         } finally {
@@ -44,7 +44,7 @@ public class SerializationUtils {
             T message = objenesis.newInstance(cls);
 
             Schema<T> schema = getSchema(cls);
-            ProtobufIOUtil.mergeFrom(CompressionUtils.decompress(data), message, schema);
+            ProtobufIOUtil.mergeFrom(CompressionUtil.decompress(data), message, schema);
             return message;
         } catch (Exception e) {
             throw new IllegalStateException(e.getMessage(), e);

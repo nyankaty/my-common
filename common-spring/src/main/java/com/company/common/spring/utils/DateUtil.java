@@ -1,5 +1,6 @@
-package com.company.common.util;
+package com.company.common.spring.utils;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -10,9 +11,9 @@ import java.util.Date;
 
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
-public class DateUtils {
+public class DateUtil {
 
-    private DateUtils() {
+    private DateUtil() {
         throw new IllegalStateException("Utility class");
     }
 
@@ -69,6 +70,16 @@ public class DateUtils {
 
     private static Date localDateTimeToDate(LocalDateTime localDateTime) {
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    public static String formatDateLog(Date date) {
+        String dateStr = formatDateWithPattern(date, "yyyy-MM-dd - HH:mm:ss Z");
+        return dateStr.replace("0700", "07:00");
+    }
+
+    public static String formatDateWithPattern(Date date, String patternFormatDate) {
+        SimpleDateFormat format = new SimpleDateFormat(patternFormatDate);
+        return format.format(date);
     }
 
 }

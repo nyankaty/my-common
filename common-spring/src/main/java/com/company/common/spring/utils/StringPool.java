@@ -1,4 +1,4 @@
-package com.company.common.util;
+package com.company.common.spring.utils;
 
 @SuppressWarnings("java:S2386")
 public final class StringPool {

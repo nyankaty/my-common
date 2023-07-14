@@ -1,4 +1,4 @@
-package com.company.common.util;
+package com.company.common.spring.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,13 +13,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("java:S3011")
-public final class DataUtils {
+public final class DataUtil {
 
-    private static final Logger log = LoggerFactory.getLogger(DataUtils.class);
+    private static final Logger log = LoggerFactory.getLogger(DataUtil.class);
 
     private static final String SEARCH_REGEX = "(.*?)";
 
-    private DataUtils() {}
+    private DataUtil() {}
 
     public static <T> T getValueOrDefault(T value, T defaultValue) {
         return Objects.isNull(value) ? defaultValue : value;

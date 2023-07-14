@@ -3,9 +3,10 @@ package com.company.common.cache.internal.implementation;
 import java.lang.reflect.Method;
 
 import com.company.common.cache.internal.properties.CaffeineCacheConfigurationProperties;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.util.StringUtils;
+
+import org.jetbrains.annotations.NotNull;
 
 public class FullKeyGenerator implements KeyGenerator {
 

@@ -1,4 +1,4 @@
-package com.company.common.util;
+package com.company.common.spring.utils;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -9,7 +9,7 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class CurrencyUtils {
+public class CurrencyUtil {
 
     private static final Locale localeVN = new Locale("vi", "VN");
     private static final Locale localeEN = new Locale("en", "EN");
@@ -175,7 +175,7 @@ public class CurrencyUtils {
 
     private static List<Integer> stringToInt(String triplet) {
         return triplet.chars()
-                .map(CurrencyUtils::charToInt)
+                .map(CurrencyUtil::charToInt)
                 .boxed()
                 .collect(Collectors.toList());
     }
@@ -204,7 +204,7 @@ public class CurrencyUtils {
         return count < groupOfThousand.size() - 1;
     }
 
-    private CurrencyUtils() {
+    private CurrencyUtil() {
         throw new IllegalStateException("Utility class");
     }
 }

@@ -1,4 +1,4 @@
-package com.company.common.util;
+package com.company.common.spring.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,11 +9,11 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
-public class CompressionUtils {
+public class CompressionUtil {
 
-    private static final Logger log = LoggerFactory.getLogger(CompressionUtils.class);
+    private static final Logger log = LoggerFactory.getLogger(CompressionUtil.class);
 
-    private CompressionUtils() {}
+    private CompressionUtil() {}
 
     public static byte[] compress(byte[] data) throws IOException {
         Deflater deflater = new Deflater();

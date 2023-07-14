@@ -1,4 +1,4 @@
-package com.company.common.util;
+package com.company.common.spring.constant;
 
 import java.util.List;
 
