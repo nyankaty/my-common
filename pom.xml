@@ -17,7 +17,8 @@
     </parent>
 
     <modules>
-        <module>common-spring</module>
+        <module>common-util</module>
+        <module>common-spring-starter</module>
         <module>common-persistence</module>
         <module>common-model</module>
         <module>common-client</module>
@@ -48,6 +49,12 @@
     </developers>
 
     <dependencies>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>23.0.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
