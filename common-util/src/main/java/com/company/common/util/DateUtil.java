@@ -1,5 +1,8 @@
 package com.company.common.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,9 +16,7 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
 public class DateUtil {
 
-    private DateUtil() {
-        throw new IllegalStateException("Utility class");
-    }
+    private static final Logger log = LoggerFactory.getLogger(DateUtil.class);
 
     public static Date yesterday() {
         return offsiteDate(new Date(), Calendar.DAY_OF_YEAR, -1);
@@ -82,4 +83,17 @@ public class DateUtil {
         return format.format(date);
     }
 
+    public static Date formatDate(final String date, final String pattern) {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat(pattern);
+            return format.parse(date);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    private DateUtil() {
+        throw new IllegalStateException("Utility class");
+    }
 }
