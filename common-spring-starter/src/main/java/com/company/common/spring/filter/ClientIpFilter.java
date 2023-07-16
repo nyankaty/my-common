@@ -6,7 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.company.common.util.TrackingContextEnum;
+import com.company.common.spring.constant.TrackingContextEnum;
 import org.apache.logging.log4j.ThreadContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;

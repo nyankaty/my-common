@@ -1,4 +1,4 @@
-package com.company.common.util;
+package com.company.common.spring.constant;
 
 public enum TrackingContextEnum {
     X_FORWARD_FOR("x-forwarded-for", "forwardIP"),

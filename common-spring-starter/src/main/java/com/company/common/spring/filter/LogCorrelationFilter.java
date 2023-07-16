@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.company.common.spring.config.properties.AppConfigurationProperties;
-import com.company.common.util.TrackingContextEnum;
+import com.company.common.spring.constant.TrackingContextEnum;
 import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

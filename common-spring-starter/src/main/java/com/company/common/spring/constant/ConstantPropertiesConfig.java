@@ -1,4 +1,4 @@
-package com.company.common.util;
+package com.company.common.spring.constant;
 
 public final class ConstantPropertiesConfig {
     public static final String APP_LOG_REQUEST_HTTP = "app.log-request-http";
