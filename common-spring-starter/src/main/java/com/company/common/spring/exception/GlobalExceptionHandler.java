@@ -47,7 +47,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             if (Objects.isNull(ex.getParams())) {
                 return this.responseFactory.fail(ex.getDataResponse(), ex.getResponseStatusCode());
             } else {
-                return Objects.isNull(ex.getDataResponse()) ? this.responseFactory.fail(new Response(), ex.getResponseStatusCode(), ex.getParams()) : this.responseFactory.fail(ex.getDataResponse(), ex.getResponseStatusCode(), ex.getParams());
+                return Objects.isNull(ex.getDataResponse()) ? this.responseFactory.fail(new Response<>(), ex.getResponseStatusCode(), ex.getParams()) : this.responseFactory.fail(ex.getDataResponse(), ex.getResponseStatusCode(), ex.getParams());
             }
         } catch (Exception var3) {
             return this.responseFactory.fail(ResponseStatusCodeEnum.INTERNAL_GENERAL_SERVER_ERROR);
