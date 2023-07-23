@@ -41,6 +41,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         this.handleHttpMessageNotReadableListError.put("Required request body is missing", ResponseStatusCodeEnum.ERROR_BODY_REQUIRED);
     }
 
+    @ExceptionHandler({BusinessException.class})
+    public final ResponseEntity<Object> handleValidationExceptions(RuntimeException ex) {
+        log.error("Exception handleValidationExceptions: {}", ex.getMessage(), ex);
+        return this.createResponse(ResponseStatusCodeEnum.BUSINESS_ERROR);
+    }
+
     @ExceptionHandler({BaseResponseException.class})
     public ResponseEntity<?> handleValidationExceptions(BaseResponseException ex) {
         try {
@@ -57,13 +63,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({Exception.class, RuntimeException.class})
     public final ResponseEntity<Object> handleAllExceptions(Exception ex) {
         log.error("Exception: ", ex);
-        return this.createResponse(ResponseStatusCodeEnum.INTERNAL_GENERAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler({BusinessException.class})
-    public final ResponseEntity<Object> handleValidationExceptions(RuntimeException ex) {
-        log.error("Exception handleValidationExceptions: {}", ex.getMessage(), ex);
-        return this.createResponse(ResponseStatusCodeEnum.BUSINESS_ERROR);
+        return this.createResponse(ResponseStatusCodeEnum.INTERNAL_GENERAL_SERVER_ERROR, ex.getStackTrace());
     }
 
     @Override
@@ -78,34 +78,34 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         if (Objects.nonNull(ex.getMessage())) {
             log.error("Exception handleHttpMessageNotReadable: {}", ex.getMessage(), ex);
-            Optional<ResponseStatusCode> responseStatusCode = this.handleHttpMessageNotReadableListError.entrySet()
+            Optional<ResponseStatusCode> code = this.handleHttpMessageNotReadableListError.entrySet()
                     .stream()
-                    .filter(stringResponseStatusCodeEntry -> ex.getMessage().contains(stringResponseStatusCodeEntry.getKey()))
+                    .filter(entry -> ex.getMessage().contains(entry.getKey()))
                     .map(Entry::getValue)
                     .findFirst();
-            if (responseStatusCode.isPresent()) {
-                return this.createResponse(responseStatusCode.get());
+            if (code.isPresent()) {
+                return this.createResponse(code.get());
             }
         }
 
         return this.handleExceptionInternal(ex, null, headers, status, request);
     }
 
-    private ResponseEntity<Object> createResponse(ResponseStatusCode response) {
-        Status responseStatus = new Status(response.getCode(), true);
-        responseStatus.setResponseTime(new Date());
-        Response<Object> responseObject = new Response<>();
-        responseObject.setStatus(responseStatus);
-        return new ResponseEntity<>(responseObject, HttpStatus.valueOf(response.getHttpCode()));
+    private ResponseEntity<Object> createResponse(ResponseStatusCode code) {
+        Status status = new Status(code.getCode(), true);
+        status.setResponseTime(new Date());
+        Response<Object> response = new Response<>();
+        response.setStatus(status);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(code.getHttpCode()));
     }
 
-    private ResponseEntity<Object> createResponse(ResponseStatusCode response, Object errors) {
-        Status responseStatus = new Status(response.getCode(), true);
-        responseStatus.setResponseTime(new Date());
-        Response<Object> responseObject = new Response<>();
-        responseObject.setStatus(responseStatus);
-        responseObject.setData(errors);
-        return new ResponseEntity<>(responseObject, HttpStatus.valueOf(response.getHttpCode()));
+    private ResponseEntity<Object> createResponse(ResponseStatusCode code, Object errors) {
+        Status status = new Status(code.getCode(), true);
+        status.setResponseTime(new Date());
+        Response<Object> response = new Response<>();
+        response.setStatus(status);
+        response.setData(errors);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(code.getHttpCode()));
     }
 }
 

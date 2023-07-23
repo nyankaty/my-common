@@ -24,7 +24,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
 
 @Component
-@SuppressWarnings("java:S3740")
+@SuppressWarnings({"java:S3740", "java:S2629"})
 public class ResponseFactory {
 
     private static final Logger log = LoggerFactory.getLogger(ResponseFactory.class);
@@ -40,54 +40,54 @@ public class ResponseFactory {
     }
 
     public <T> ResponseEntity<Response<T>> success(T data) {
-        Response<T> responseObject = new Response<>();
-        responseObject.setData(data);
-        return this.success(responseObject);
+        Response<T> response = new Response<>();
+        response.setData(data);
+        return this.success(response);
     }
 
-    public <T> ResponseEntity<Response<T>> success(Response<T> responseObject) {
+    public <T> ResponseEntity<Response<T>> success(Response<T> response) {
         Status status = this.parseResponseStatus(ResponseStatusCodeEnum.SUCCESS.getCode(), null);
-        responseObject.setStatus(status);
-        return ResponseEntity.ok().body(responseObject);
+        response.setStatus(status);
+        return ResponseEntity.ok().body(response);
     }
 
     public <T> ResponseEntity<Response<T>> successWithHeader(MultiValueMap<String, String> header, T data) {
-        Response<T> responseObject = new Response<>();
-        responseObject.setData(data);
+        Response<T> response = new Response<>();
+        response.setData(data);
         Status status = this.parseResponseStatus(ResponseStatusCodeEnum.SUCCESS.getCode(), null);
-        responseObject.setStatus(status);
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.addAll(header);
-        return (ResponseEntity.ok().headers(responseHeaders)).body(responseObject);
+        response.setStatus(status);
+        HttpHeaders headers = new HttpHeaders();
+        headers.addAll(header);
+        return (ResponseEntity.ok().headers(headers)).body(response);
     }
 
     public <T> ResponseEntity<Response<T>> fail(T data, ResponseStatusCode code) {
-        Response<T> responseObject = new Response<>();
-        responseObject.setData(data);
-        return this.fail(responseObject, code, null);
+        Response<T> response = new Response<>();
+        response.setData(data);
+        return this.fail(response, code, null);
     }
 
     public <T> ResponseEntity<Response<T>> fail(ResponseStatusCode code) {
-        Response<T> responseObject = new Response<>();
-        return this.fail(responseObject, code, null);
+        Response<T> response = new Response<>();
+        return this.fail(response, code, null);
     }
 
-    public <T> ResponseEntity<Response<T>> fail(Response<T> responseObject, ResponseStatusCode code) {
-        if (Objects.isNull(responseObject)) {
-            responseObject = new Response<>();
+    public <T> ResponseEntity<Response<T>> fail(Response<T> response, ResponseStatusCode code) {
+        if (Objects.isNull(response)) {
+            response = new Response<>();
         }
 
-        return this.fail(responseObject, code, null);
+        return this.fail(response, code, null);
     }
 
-    public <T> ResponseEntity<Response<T>> fail(Response<T> responseObject, ResponseStatusCode code, Map<String, String> params) {
+    public <T> ResponseEntity<Response<T>> fail(Response<T> response, ResponseStatusCode code, Map<String, String> params) {
         Status status = this.parseResponseStatus(code.getCode(), params);
-        if (Objects.isNull(responseObject)) {
-            responseObject = new Response<>();
+        if (Objects.isNull(response)) {
+            response = new Response<>();
         }
 
-        responseObject.setStatus(status);
-        return ResponseEntity.status(code.getHttpCode()).body(responseObject);
+        response.setStatus(status);
+        return ResponseEntity.status(code.getHttpCode()).body(response);
     }
 
     public <T> void httpServletResponseToClient(HttpServletResponse httpServletResponse, T data, ResponseStatusCode statusCode) throws IOException {
