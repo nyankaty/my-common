@@ -9,6 +9,7 @@ import com.company.common.cache.external.customizer.RedisConnectionFactoryCustom
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -22,6 +23,10 @@ import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import com.company.common.cache.external.properties.RedisCacheConfigurationProperties;
 
+@ConditionalOnProperty(
+        value = {"app.cache.external.enable"},
+        havingValue = "true"
+)
 @Configuration
 @EnableCaching
 @ComponentScan({"com.company.common"})
@@ -30,6 +35,7 @@ import com.company.common.cache.external.properties.RedisCacheConfigurationPrope
         exclude = {FreeMarkerAutoConfiguration.class, RedisAutoConfiguration.class, CacheAutoConfiguration.class}
 )
 public class RedisCacheManagerConfig {
+
     RedisCacheConfigurationProperties redisCacheConfigurationProperties;
 
     @Autowired

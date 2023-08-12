@@ -36,9 +36,6 @@ public class AppConfigurationProperties {
     @Value("${app.async-executor-max-pool-size}")
     private int asyncExecutorMaxPoolSize;
 
-    @Value("${app.log-graphql-enabled}")
-    private boolean logGraphqlEnabled;
-
     @Value("${app.time-trace-enabled}")
     private boolean timeTraceEnabled;
 
@@ -86,10 +83,6 @@ public class AppConfigurationProperties {
         return this.defaultLanguage;
     }
 
-    public boolean isLogGraphqlEnabled() {
-        return this.logGraphqlEnabled;
-    }
-
     public boolean isTimeTraceEnabled() {
         return this.timeTraceEnabled;
     }
@@ -134,10 +127,6 @@ public class AppConfigurationProperties {
         this.defaultLanguage = defaultLanguage;
     }
 
-    public void setLogGraphqlEnabled(final boolean logGraphqlEnabled) {
-        this.logGraphqlEnabled = logGraphqlEnabled;
-    }
-
     public void setTimeTraceEnabled(final boolean timeTraceEnabled) {
         this.timeTraceEnabled = timeTraceEnabled;
     }
@@ -147,6 +136,6 @@ public class AppConfigurationProperties {
     }
 
     public String toString() {
-        return "AppConfigurationProperties(applicationShortName=" + this.getApplicationShortName() + ", applicationContextName=" + this.getApplicationContextName() + ", logRequestHttp=" + this.isLogRequestHttp() + ", defaultServiceEnableLogRequest=" + this.isDefaultServiceEnableLogRequest() + ", repositoryQueryLimitWarningMs=" + this.getRepositoryQueryLimitWarningMs() + ", asyncExecutorCorePoolSize=" + this.getAsyncExecutorCorePoolSize() + ", asyncExecutorMaxPoolSize=" + this.getAsyncExecutorMaxPoolSize() + ", localeResolverLanguages=" + this.getLocaleResolverLanguages() + ", defaultLanguage=" + this.getDefaultLanguage() + ", logGraphqlEnabled=" + this.isLogGraphqlEnabled() + ", timeTraceEnabled=" + this.isTimeTraceEnabled() + ", asyncExecutorThreadNamePrefix=" + this.getAsyncExecutorThreadNamePrefix() + ")";
+        return "AppConfigurationProperties(applicationShortName=" + this.getApplicationShortName() + ", applicationContextName=" + this.getApplicationContextName() + ", logRequestHttp=" + this.isLogRequestHttp() + ", defaultServiceEnableLogRequest=" + this.isDefaultServiceEnableLogRequest() + ", repositoryQueryLimitWarningMs=" + this.getRepositoryQueryLimitWarningMs() + ", asyncExecutorCorePoolSize=" + this.getAsyncExecutorCorePoolSize() + ", asyncExecutorMaxPoolSize=" + this.getAsyncExecutorMaxPoolSize() + ", localeResolverLanguages=" + this.getLocaleResolverLanguages() + ", defaultLanguage=" + this.getDefaultLanguage() + ", timeTraceEnabled=" + this.isTimeTraceEnabled() + ", asyncExecutorThreadNamePrefix=" + this.getAsyncExecutorThreadNamePrefix() + ")";
     }
 }

@@ -7,9 +7,14 @@ import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
+@ConditionalOnProperty(
+        value = {"app.cache.internal.enable"},
+        havingValue = "true"
+)
 @Component
 @ComponentScan(
         basePackages = {"com.company.common.cache.internal.properties", "com.company.common.cache.internal.configuration"}

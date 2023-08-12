@@ -35,7 +35,6 @@ public class GrpcServerInterceptor implements ServerInterceptor {
     public <M, R> Listener<M> interceptCall(ServerCall<M, R> serverCall, Metadata metadata, ServerCallHandler<M, R> serverCallHandler) {
         final String requestId = metadata.get(REQUEST_ID_KEY);
         ThreadContext.put("X-Request-Id", requestId);
-        ThreadContext.put("X-Request-Id", requestId);
         GrpcServerInterceptor.GrpcServerCall<M, R> grpcServerCall = new GrpcServerInterceptor.GrpcServerCall<>(serverCall, this.gRpcServerPropertiesCustom);
         Listener<M> listener = serverCallHandler.startCall(grpcServerCall, metadata);
         return new SimpleForwardingServerCallListener<>(listener) {

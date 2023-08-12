@@ -14,6 +14,7 @@ import io.lettuce.core.cluster.api.async.RedisAdvancedClusterAsyncCommands;
 import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -39,6 +40,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@ConditionalOnProperty(
+        value = {"app.cache.external.enable"},
+        havingValue = "true"
+)
 @Component
 @ComponentScan({"com.company.common.cache.properties"})
 @SuppressWarnings("java:S1192")

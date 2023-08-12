@@ -19,6 +19,7 @@ import java.util.Map;
         havingValue = "true"
 )
 public class KafkaProducerEventConfig {
+
     final KafkaConfigurationProducer kafkaConfigurationProducer;
 
     public KafkaProducerEventConfig(KafkaConfigurationProducer kafkaConfigurationProducer) {
@@ -41,9 +42,5 @@ public class KafkaProducerEventConfig {
     @Primary
     public KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<>(this.producerFactory());
-    }
-
-    public KafkaConfigurationProducer getKafkaConfigurationProducer() {
-        return this.kafkaConfigurationProducer;
     }
 }

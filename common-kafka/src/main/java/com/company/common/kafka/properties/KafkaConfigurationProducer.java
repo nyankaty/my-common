@@ -1,5 +1,6 @@
 package com.company.common.kafka.properties;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Producer;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -17,15 +18,20 @@ import org.springframework.context.annotation.Primary;
 )
 public class KafkaConfigurationProducer extends Producer {
 
+    @Value("${spring.kafka.producer.enabled}")
     private boolean enabled;
 
+    @Value("${spring.kafka.producer.default-topic}")
     private String defaultTopic;
 
-    private int deliveryTimeout = 5000;
+    @Value("${spring.kafka.producer.delivery-timeout}")
+    private int deliveryTimeout;
 
-    private int requestTimeout = 3000;
+    @Value("${spring.kafka.producer.request-timeout}")
+    private int requestTimeout;
 
-    private int queueSize = 100;
+    @Value("${spring.kafka.producer.queue-size}")
+    private int queueSize;
 
     public KafkaConfigurationProducer() {
         // no arg constructor
