@@ -43,12 +43,12 @@ import java.util.stream.Collectors;
 @ComponentScan({"com.company.common.cache.properties"})
 @SuppressWarnings("java:S1192")
 public class RedisCacheTemplate implements ExternalCacheTemplate {
+
     private static final Logger log = LoggerFactory.getLogger(RedisCacheTemplate.class);
     RedisConnection redisConnection;
     RedisTemplate<String, String> redisTemplate;
     RedisCacheConfigurationProperties externalCacheProp;
     private static final ObjectMapper om = new ObjectMapper();
-    static final String DEFAULT_CACHE_NAME = "";
 
     public RedisCacheTemplate(RedisCacheConfigurationProperties externalCacheProp) {
         RedisConnectionFactory redisConnectionFactory = (new RedisConnectionFactoryCustomizer(externalCacheProp)).getRedisConnectionFactory();

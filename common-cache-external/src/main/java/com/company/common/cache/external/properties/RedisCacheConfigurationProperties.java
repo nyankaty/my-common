@@ -1,5 +1,7 @@
 package com.company.common.cache.external.properties;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,18 +11,39 @@ import java.util.List;
 import java.util.Map;
 
 @Configuration
+@ConditionalOnProperty(
+        value = {"app.cache.external.enable"},
+        havingValue = "true"
+)
 @ConfigurationProperties(
         prefix = "app.cache.external"
 )
 public class RedisCacheConfigurationProperties {
-    private String applicationShortName = "demoCacheApp";
-    private String delimiter;
-    private int port = 6379;
-    private String host = "localhost";
+
+    @Value("${app.cache.external.applicationShortName}")
+    private String applicationShortName;
+
+    @Value("${app.cache.external.host}")
+    private String host;
+
+    @Value("${app.cache.external.port}")
+    private int port;
+
+    @Value("${app.cache.external.password}")
+    private String password;
+
+    @Value("${app.cache.external.nodes}")
     private List<String> nodes = new ArrayList<>();
-    private Long cacheDefaultExpiration = null;
+
+    @Value("${app.cache.external.delimiter}")
+    private String delimiter;
+
+    @Value("${app.cache.external.cacheDefaultExpiration}")
+    private Long cacheDefaultExpiration;
+
+    @Value("${app.cache.external.cacheExpirations}")
     private Map<String, Long> cacheExpirations = new HashMap<>();
-    private String password = "";
+
 
     public RedisCacheConfigurationProperties() {
         // no arg constructor

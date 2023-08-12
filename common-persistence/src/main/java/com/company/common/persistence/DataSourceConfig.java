@@ -37,7 +37,7 @@ public class DataSourceConfig {
 
     private static final Logger log = LoggerFactory.getLogger(DataSourceConfig.class);
 
-    @Value("${app.datasource.default.url:#{null}}")
+    @Value("${app.datasource.default.url}")
     private String urlForLog;
 
     public DataSourceConfig() {

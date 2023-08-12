@@ -1,18 +1,40 @@
 package com.company.common.cache.internal.properties;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
+@ConditionalOnProperty(
+        value = {"app.cache.internal.enable"},
+        havingValue = "true"
+)
 @ConfigurationProperties(
         prefix = "app.cache.internal"
 )
 public class CaffeineCacheConfigurationProperties {
-    String applicationShortName = "demoCacheApp";
-    Long expireAfterWrite = null;
-    Long expireAfterAccess = null;
-    Long refreshAfterWrite = null;
-    Boolean enableRecordStats = true;
-    Boolean cacheTemporaryDisable = false;
-    Boolean removalListener = true;
+
+    @Value("${app.cache.internal.applicationShortName}")
+    String applicationShortName;
+
+    @Value("${app.cache.internal.expireAfterWrite}")
+    Long expireAfterWrite;
+
+    @Value("${app.cache.internal.expireAfterAccess}")
+    Long expireAfterAccess;
+
+    @Value("${app.cache.internal.refreshAfterWrite}")
+    Long refreshAfterWrite;
+
+    @Value("${app.cache.internal.enableRecordStats}")
+    Boolean enableRecordStats;
+
+    @Value("${app.cache.internal.cacheTemporaryDisable}")
+    Boolean cacheTemporaryDisable;
+
+    @Value("${app.cache.internal.removalListener}")
+    Boolean removalListener;
 
     public CaffeineCacheConfigurationProperties() {
         // no arg constructor

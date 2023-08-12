@@ -13,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 public class RedisConnectionFactoryCustomizer {
+
     private static final Logger log = LoggerFactory.getLogger(RedisConnectionFactoryCustomizer.class);
     RedisCacheConfigurationProperties properties;
 

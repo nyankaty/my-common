@@ -10,7 +10,6 @@ import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer
 import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
 import org.springframework.util.StringUtils;
 
-
 public class RedisCacheConfigurationCustomizer {
     RedisCacheConfigurationProperties redisCacheConfigurationProperties;
 

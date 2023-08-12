@@ -2,6 +2,7 @@ package com.company.common.spring.config.properties;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -13,25 +14,37 @@ import org.springframework.context.annotation.Configuration;
 )
 @RefreshScope
 public class AppConfigurationProperties {
+
     @Value("${app.application-short-name}")
     private String applicationShortName;
+
     @Value("${app.application-context-name}")
     private String applicationContextName;
-    @Value("${app.log-request-http:#{false}}")
+
+    @Value("${app.log-request-http}")
     private boolean logRequestHttp;
-    @Value("${app.default-service-enable-log-request:#{false}}")
-    private boolean defaultServiceEnableLogRequest = false;
-    @Value("${app.repository-query-limit-warning-ms:30}")
+
+    @Value("${app.default-service-enable-log-request}")
+    private boolean defaultServiceEnableLogRequest;
+
+    @Value("${app.repository-query-limit-warning-ms}")
     private int repositoryQueryLimitWarningMs;
-    private int asyncExecutorCorePoolSize = 2;
-    private int asyncExecutorMaxPoolSize = 4;
+
+    @Value("${app.async-executor-core-pool-size}")
+    private int asyncExecutorCorePoolSize;
+
+    @Value("${app.async-executor-max-pool-size}")
+    private int asyncExecutorMaxPoolSize;
+
+    @Value("${app.log-graphql-enabled}")
+    private boolean logGraphqlEnabled;
+
+    @Value("${app.time-trace-enabled}")
+    private boolean timeTraceEnabled;
+
+    private String asyncExecutorThreadNamePrefix = "Async-";
     private List<String> localeResolverLanguages = Arrays.asList("en", "vi");
     private String defaultLanguage = "vi";
-    @Value("${app.log-graphql-enabled:#{false}}")
-    private boolean logGraphqlEnabled;
-    @Value("${app.time-trace-enabled:#{false}}")
-    private boolean timeTraceEnabled;
-    private String asyncExecutorThreadNamePrefix = "Async-";
 
     public AppConfigurationProperties() {
         // no arg constructor

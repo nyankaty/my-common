@@ -12,11 +12,14 @@ import org.springframework.context.annotation.Primary;
 @RefreshScope
 @Primary
 public class GRpcServerPropertiesCustom extends GRpcServerProperties {
-    @Value("${grpc.client-request-timeout-ms=:10000}")
+
+    @Value("${grpc.client-request-timeout-ms}")
     private Long clientRequestTimeoutMs;
-    @Value("${grpc.client-request-log:false}")
+
+    @Value("${grpc.client-request-log}")
     private boolean clientRequestLog;
-    @Value("${grpc.server-log:false}")
+
+    @Value("${grpc.server-log}")
     private boolean serverLog;
 
     public GRpcServerPropertiesCustom() {
