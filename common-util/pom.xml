@@ -11,23 +11,4 @@
 
     <artifactId>common-util</artifactId>
 
-    <properties>
-        <protostuff.version>1.7.4</protostuff.version>
-    </properties>
-
-    <dependencies>
-        <!-- protostuff -->
-        <dependency>
-            <groupId>io.protostuff</groupId>
-            <artifactId>protostuff-core</artifactId>
-            <version>${protostuff.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.protostuff</groupId>
-            <artifactId>protostuff-runtime</artifactId>
-            <version>${protostuff.version}</version>
-        </dependency>
-    </dependencies>
-
 </project>

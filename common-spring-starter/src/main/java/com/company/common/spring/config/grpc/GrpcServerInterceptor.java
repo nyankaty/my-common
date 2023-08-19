@@ -15,10 +15,15 @@ import org.lognet.springboot.grpc.GRpcGlobalInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 
 @GRpcGlobalInterceptor
 @Configuration
+@ConditionalOnProperty(
+        value = {"grpc.enabled"},
+        havingValue = "true"
+)
 @SuppressWarnings("java:S1192")
 public class GrpcServerInterceptor implements ServerInterceptor {
 

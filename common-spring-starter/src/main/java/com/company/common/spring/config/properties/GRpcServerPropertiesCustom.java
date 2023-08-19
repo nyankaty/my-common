@@ -2,13 +2,19 @@ package com.company.common.spring.config.properties;
 
 import org.lognet.springboot.grpc.autoconfigure.GRpcServerProperties;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 @Configuration
-@ConfigurationProperties("grpc")
+@ConfigurationProperties(
+        prefix = "grpc")
+@ConditionalOnProperty(
+        value = {"grpc.enabled"},
+        havingValue = "true"
+)
 @RefreshScope
 @Primary
 public class GRpcServerPropertiesCustom extends GRpcServerProperties {

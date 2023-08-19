@@ -23,7 +23,7 @@ public class RedisCacheConfigurationCustomizer {
         SerializationPair<Object> pair = SerializationPair.fromSerializer(jdkSerializer);
         return RedisCacheConfiguration.defaultCacheConfig().serializeValuesWith(pair).computePrefixWith(cacheName -> {
             String prefix = this.redisCacheConfigurationProperties.getApplicationShortName() + this.redisCacheConfigurationProperties.getDelimiter();
-            if (!StringUtils.isEmpty(cacheName)) {
+            if (StringUtils.hasLength(cacheName)) {
                 prefix = prefix + cacheName + this.redisCacheConfigurationProperties.getDelimiter();
             }
 
