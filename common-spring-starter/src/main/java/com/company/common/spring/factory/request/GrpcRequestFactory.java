@@ -5,17 +5,20 @@ import com.company.common.spring.config.properties.GRpcServerPropertiesCustom;
 import io.grpc.ManagedChannel;
 import io.grpc.netty.NettyChannelBuilder;
 import io.netty.handler.ssl.SslContext;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
+@ConditionalOnProperty(
+        value = {"grpc.enabled"},
+        havingValue = "true"
+)
 public class GrpcRequestFactory {
 
-    @Autowired
-    GRpcServerPropertiesCustom gRpcServerPropertiesCustom;
+    private final GRpcServerPropertiesCustom gRpcServerPropertiesCustom;
 
-    public GrpcRequestFactory() {
-        // no arg constructor
+    public GrpcRequestFactory(GRpcServerPropertiesCustom gRpcServerPropertiesCustom) {
+        this.gRpcServerPropertiesCustom = gRpcServerPropertiesCustom;
     }
 
     public ManagedChannel createChannel(String host, int port) {

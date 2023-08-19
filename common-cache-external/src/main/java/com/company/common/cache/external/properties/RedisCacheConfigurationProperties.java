@@ -41,7 +41,7 @@ public class RedisCacheConfigurationProperties {
     @Value("${app.cache.external.cacheDefaultExpiration}")
     private Long cacheDefaultExpiration;
 
-    @Value("${app.cache.external.cacheExpirations}")
+//    @Value("${app.cache.external.cacheExpirations}")
     private Map<String, Long> cacheExpirations = new HashMap<>();
 
 
