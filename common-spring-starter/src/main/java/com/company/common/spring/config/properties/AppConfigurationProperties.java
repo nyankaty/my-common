@@ -36,6 +36,12 @@ public class AppConfigurationProperties {
     @Value("${app.async-executor-max-pool-size}")
     private int asyncExecutorMaxPoolSize;
 
+    @Value("${app.async-executor-keep-alive-seconds}")
+    private int keepAliveSeconds;
+
+    @Value("${app.async-executor-queue-capacity}")
+    private int queueCapacity;
+
     @Value("${app.time-trace-enabled}")
     private boolean timeTraceEnabled;
 
@@ -73,6 +79,14 @@ public class AppConfigurationProperties {
 
     public int getAsyncExecutorMaxPoolSize() {
         return this.asyncExecutorMaxPoolSize;
+    }
+
+    public int getKeepAliveSeconds() {
+        return keepAliveSeconds;
+    }
+
+    public int getQueueCapacity() {
+        return queueCapacity;
     }
 
     public List<String> getLocaleResolverLanguages() {
@@ -117,6 +131,14 @@ public class AppConfigurationProperties {
 
     public void setAsyncExecutorMaxPoolSize(final int asyncExecutorMaxPoolSize) {
         this.asyncExecutorMaxPoolSize = asyncExecutorMaxPoolSize;
+    }
+
+    public void setKeepAliveSeconds(int keepAliveSeconds) {
+        this.keepAliveSeconds = keepAliveSeconds;
+    }
+
+    public void setQueueCapacity(int queueCapacity) {
+        this.queueCapacity = queueCapacity;
     }
 
     public void setLocaleResolverLanguages(final List<String> localeResolverLanguages) {

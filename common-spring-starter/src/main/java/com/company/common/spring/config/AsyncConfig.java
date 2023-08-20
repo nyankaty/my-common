@@ -21,16 +21,20 @@ public class AsyncConfig {
 
     @Bean({"threadPoolTaskExecutor"})
     public TaskExecutor getAsyncExecutor() {
-        log.info("corePoolSize : {}, MaxPoolSize : {}", this.appConfigurationProperties.getAsyncExecutorCorePoolSize(), this.appConfigurationProperties.getAsyncExecutorMaxPoolSize());
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(this.appConfigurationProperties.getAsyncExecutorCorePoolSize());
         executor.setMaxPoolSize(this.appConfigurationProperties.getAsyncExecutorMaxPoolSize());
+        executor.setKeepAliveSeconds(this.appConfigurationProperties.getKeepAliveSeconds());
+        executor.setQueueCapacity(this.appConfigurationProperties.getQueueCapacity());
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setThreadNamePrefix(this.appConfigurationProperties.getAsyncExecutorThreadNamePrefix());
-        return executor;
-    }
 
-    public AppConfigurationProperties getAppConfigurationProperties() {
-        return this.appConfigurationProperties;
+        log.info("Configured Async bean name: 'threadPoolTaskExecutor' have corePoolSize: {}, maxPoolSize: {}, keepAliveSeconds: {}, queueCapacity: {}, waitForTasksToCompleteOnShutdown: true",
+                this.appConfigurationProperties.getAsyncExecutorCorePoolSize(),
+                this.appConfigurationProperties.getAsyncExecutorMaxPoolSize(),
+                this.appConfigurationProperties.getKeepAliveSeconds(),
+                this.appConfigurationProperties.getQueueCapacity());
+
+        return executor;
     }
 }

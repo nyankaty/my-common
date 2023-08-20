@@ -12,7 +12,6 @@ import com.company.common.spring.constant.TrackingContextEnum;
 import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
@@ -24,11 +23,10 @@ public class LogCorrelationFilter extends OncePerRequestFilter {
 
     private static final Logger log = LoggerFactory.getLogger(LogCorrelationFilter.class);
 
-    @Autowired
-    private AppConfigurationProperties appConfig;
+    private final AppConfigurationProperties appConfig;
 
-    public LogCorrelationFilter() {
-        // no arg constructor
+    public LogCorrelationFilter(AppConfigurationProperties appConfig) {
+        this.appConfig = appConfig;
     }
 
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {

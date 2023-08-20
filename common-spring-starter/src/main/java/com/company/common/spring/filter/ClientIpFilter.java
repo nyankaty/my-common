@@ -17,10 +17,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Order(2)
 public class ClientIpFilter extends OncePerRequestFilter {
 
-    public ClientIpFilter() {
-        // no arg constructor
-    }
-
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String xRealIp = httpServletRequest.getHeader(TrackingContextEnum.X_REAL_IP.getHeaderKey());
         String ipList = StringUtils.isEmpty(xRealIp) ? httpServletRequest.getRemoteAddr() : xRealIp;

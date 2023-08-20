@@ -1,19 +1,29 @@
 package com.company.common.spring.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.company.common.spring.config.properties.InfoConfigurationProperties;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Optional;
+
 @Configuration
 public class MainApplicationConfig {
 
-    @Autowired
-    private Environment env;
+    private static final Logger log = LoggerFactory.getLogger(MainApplicationConfig.class);
 
-    public MainApplicationConfig() {
-        // no arg constructor
+    private final Environment env;
+    private final InfoConfigurationProperties infoConfigurationProperties;
+
+    public MainApplicationConfig(Environment env, InfoConfigurationProperties infoConfigurationProperties) {
+        this.env = env;
+        this.infoConfigurationProperties = infoConfigurationProperties;
     }
 
     @Bean
@@ -26,5 +36,49 @@ public class MainApplicationConfig {
 
     public String getProperty(String name) {
         return this.env.getProperty(name);
+    }
+
+    public void logApplicationStartup() {
+        log.debug("\n----------------------------------------------------------\n\t" +
+                        "Project build info:\n\t" +
+                        "Description: \t{}\n\t" +
+                        "Name: \t\t{}\n\t" +
+                        "Version: \t{}\n\t" +
+                        "Artifact: \t{}" +
+                        "\n----------------------------------------------------------",
+                infoConfigurationProperties.getDescription(),
+                infoConfigurationProperties.getName(),
+                infoConfigurationProperties.getVersion(),
+                infoConfigurationProperties.getArtifact());
+
+        String protocol = Optional.ofNullable(this.getProperty("server.ssl.key-store")).map(key -> "https").orElse("http");
+        String serverPort = this.getProperty("server.port");
+        String contextPath = Optional
+                .ofNullable(this.getProperty("apiUrl"))
+                .filter(StringUtils::isNotBlank)
+                .orElse("/");
+        String hostAddress = "localhost";
+
+        try {
+            hostAddress = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            log.debug("The host name could not be determined, using `localhost` as fallback");
+        }
+
+        log.debug("\n----------------------------------------------------------\n\t" +
+                        "Application '{}' is running! Access URLs:\n\t" +
+                        "Local: \t\t{}://localhost:{}{}\n\t" +
+                        "External: \t{}://{}:{}{}\n\t" +
+                        "Profile(s): \t{}" +
+                "\n----------------------------------------------------------",
+                this.getProperty("application-short-name"),
+                protocol,
+                serverPort,
+                contextPath,
+                protocol,
+                hostAddress,
+                serverPort,
+                contextPath,
+                env.getActiveProfiles().length == 0 ? env.getDefaultProfiles() : env.getActiveProfiles());
     }
 }

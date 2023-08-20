@@ -6,9 +6,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ServiceSelfHealth implements HealthIndicator {
-    public ServiceSelfHealth() {
-        // no arg constructor
-    }
 
     public Health health() {
         return Health.up().withDetail("service_status", "available").build();
