@@ -41,15 +41,15 @@ public class MainApplicationConfig {
     public void logApplicationStartup() {
         log.debug("\n----------------------------------------------------------\n\t" +
                         "Project build info:\n\t" +
-                        "Description: \t{}\n\t" +
                         "Name: \t\t{}\n\t" +
                         "Version: \t{}\n\t" +
-                        "Artifact: \t{}" +
+                        "Artifact: \t{}\n\t" +
+                        "Description: \t{}" +
                         "\n----------------------------------------------------------",
-                infoConfigurationProperties.getDescription(),
                 infoConfigurationProperties.getName(),
                 infoConfigurationProperties.getVersion(),
-                infoConfigurationProperties.getArtifact());
+                infoConfigurationProperties.getArtifact(),
+                infoConfigurationProperties.getDescription());
 
         String protocol = Optional.ofNullable(this.getProperty("server.ssl.key-store")).map(key -> "https").orElse("http");
         String serverPort = this.getProperty("server.port");

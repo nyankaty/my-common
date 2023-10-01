@@ -47,7 +47,7 @@ public class AppConfigurationProperties {
 
     private String asyncExecutorThreadNamePrefix = "Async-";
     private List<String> localeResolverLanguages = Arrays.asList("en", "vi");
-    private String defaultLanguage = "vi";
+    private String defaultLanguage = "en";
 
     public AppConfigurationProperties() {
         // no arg constructor

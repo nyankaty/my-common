@@ -1,7 +1,6 @@
 package com.company.common.spring.filter;
 
 import com.company.common.spring.filter.cachehttp.CachedBodyHttpServletRequest;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
@@ -17,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.catalina.connector.CoyoteOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -31,13 +29,9 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
         value = {"app.log-request-http"},
         havingValue = "true"
 )
-@SuppressWarnings("all")
 public class RequestHttpFilter extends OncePerRequestFilter {
 
     private static final Logger log = LoggerFactory.getLogger(RequestHttpFilter.class);
-
-    @Autowired
-    ObjectMapper objectMapper;
 
     Map<String, String> replaceCharsError = new HashMap<>();
 
@@ -54,11 +48,11 @@ public class RequestHttpFilter extends OncePerRequestFilter {
             str.append("\n Request = ").append(" \n").append("Request to : ").append(this.getFullURL(cachedBodyHttpServletRequest)).append(" \n").append("Method     : ").append(cachedBodyHttpServletRequest.getMethod()).append(" \n").append("Header     : ").append(cachedBodyHttpServletRequest.getHeaders()).append(" \n").append("Body       : ").append(this.replaceChars(new String(cachedBodyHttpServletRequest.getCachedBody(), StandardCharsets.UTF_8))).append(" \n").append(" \n");
             chain.doFilter(cachedBodyHttpServletRequest, responseWrapper);
             responseWrapper.copyBodyToResponse();
-            str.append("\n Response = ").append(" \n").append("Status code  : {}").append(responseWrapper.getStatus()).append(" \n").append("Header     : ").append(this.getHeaders(responseWrapper)).append(" \n");
+            str.append("\n Response = ").append(" \n").append("Status     : ").append(responseWrapper.getStatus()).append(" \n").append("Header     : ").append(this.getHeaders(responseWrapper)).append(" \n");
             str.append("Body       : ").append(this.getBodyResponse(responseWrapper)).append(" \n");
             str.append(" \n");
-        } catch (Exception var10) {
-            this.logger.error(var10.getMessage(), var10);
+        } catch (Exception e) {
+            log.error("[FILTER]: An error occur: {}", e.getMessage());
         } finally {
             log.info(str.toString());
         }
@@ -73,9 +67,9 @@ public class RequestHttpFilter extends OncePerRequestFilter {
         ByteBuffer byteBuffer = (ByteBuffer)field2.get(field.get(responseWrapper.getResponse().getOutputStream()));
         Field fieldBytesWritten = field.get(responseWrapper.getResponse().getOutputStream()).getClass().getDeclaredField("bytesWritten");
         fieldBytesWritten.setAccessible(true);
-        Long bytesWritten = (Long)fieldBytesWritten.get(field.get(responseWrapper.getResponse().getOutputStream()));
+        Long bytesWritten = (Long) fieldBytesWritten.get(field.get(responseWrapper.getResponse().getOutputStream()));
         if (byteBuffer.array().length < bytesWritten) {
-            bytesWritten = (long)byteBuffer.array().length;
+            bytesWritten = (long) byteBuffer.array().length;
         }
 
         return this.replaceChars(new String(byteBuffer.array(), 0, Math.toIntExact(bytesWritten), StandardCharsets.UTF_8));

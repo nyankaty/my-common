@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("all")
 public class GrpcClientInterceptor implements ClientInterceptor {
 
     private static final Logger log = LoggerFactory.getLogger(GrpcClientInterceptor.class);

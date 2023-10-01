@@ -1,6 +1,5 @@
-package com.company.common.util;
+package com.company.common.util.constant;
 
-@SuppressWarnings("java:S2386")
 public final class StringPool {
 
     private StringPool() {
@@ -111,5 +110,4 @@ public final class StringPool {
             ASCII_TABLE[i] = String.valueOf((char) i);
         }
     }
-
 }

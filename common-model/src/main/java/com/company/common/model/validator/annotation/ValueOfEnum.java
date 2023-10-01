@@ -16,7 +16,6 @@ import javax.validation.Payload;
 @Constraint(
         validatedBy = {ValueOfEnumValidator.class}
 )
-@SuppressWarnings("java:S1452")
 public @interface ValueOfEnum {
     Class<? extends Enum<?>> enumClass();
 

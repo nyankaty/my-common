@@ -46,7 +46,6 @@ import java.util.stream.Collectors;
 )
 @Component
 @ComponentScan({"com.company.common.cache.properties"})
-@SuppressWarnings("java:S1192")
 public class RedisCacheTemplate implements ExternalCacheTemplate {
 
     private static final Logger log = LoggerFactory.getLogger(RedisCacheTemplate.class);

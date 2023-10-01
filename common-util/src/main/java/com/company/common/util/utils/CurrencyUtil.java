@@ -1,4 +1,4 @@
-package com.company.common.util;
+package com.company.common.util.utils;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -30,7 +30,6 @@ public class CurrencyUtil {
         return numberFormat.format(bigDecimal);
     }
 
-    @SuppressWarnings("java:S3864")
     public static String num2String(long num) {
 
         if (num == 0L) {

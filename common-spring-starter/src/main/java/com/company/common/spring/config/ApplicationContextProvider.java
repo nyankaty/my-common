@@ -5,7 +5,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 @Component
-@SuppressWarnings("java:S2696")
 public class ApplicationContextProvider implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 

@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
-@SuppressWarnings("java:S119")
 public abstract class BaseJPAAdapter<E, ID, R extends BaseJPARepository<E, ID>> {
 
     @Autowired

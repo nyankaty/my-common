@@ -24,7 +24,6 @@ import org.springframework.context.annotation.Configuration;
         value = {"grpc.enabled"},
         havingValue = "true"
 )
-@SuppressWarnings("java:S1192")
 public class GrpcServerInterceptor implements ServerInterceptor {
 
     private static final Logger log = LoggerFactory.getLogger(GrpcServerInterceptor.class);

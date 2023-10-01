@@ -5,7 +5,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import com.company.common.model.validator.annotation.NotCorrectFormatDate;
-import com.company.common.util.DateUtil;
+import com.company.common.util.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 
 public class NotCorrectFormatDateValidator implements ConstraintValidator<NotCorrectFormatDate, String> {

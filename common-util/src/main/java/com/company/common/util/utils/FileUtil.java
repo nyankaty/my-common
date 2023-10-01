@@ -1,4 +1,7 @@
-package com.company.common.util;
+package com.company.common.util.utils;
+
+import com.company.common.util.constant.Constants;
+import com.company.common.util.constant.StringPool;
 
 public final class FileUtil {
 
@@ -38,6 +41,6 @@ public final class FileUtil {
             return false;
         }
         String fileType = fileName.substring(last + 1);
-        return Constant.EXTENSIONS.contains(fileType.toLowerCase());
+        return Constants.EXTENSIONS.contains(fileType.toLowerCase());
     }
 }

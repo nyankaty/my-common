@@ -1,4 +1,4 @@
-package com.company.common.util;
+package com.company.common.util.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +11,6 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
-
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
 public class DateUtil {

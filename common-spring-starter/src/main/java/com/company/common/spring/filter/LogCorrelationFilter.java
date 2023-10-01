@@ -1,14 +1,12 @@
 package com.company.common.spring.filter;
 
-import java.io.IOException;
 import java.util.UUID;
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.company.common.spring.config.properties.AppConfigurationProperties;
-import com.company.common.spring.constant.TrackingContextEnum;
+import com.company.common.util.enums.TrackingContextEnum;
 import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,13 +27,17 @@ public class LogCorrelationFilter extends OncePerRequestFilter {
         this.appConfig = appConfig;
     }
 
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        long time = System.currentTimeMillis();
-        this.generateCorrelationIdIfNotExists(request.getHeader(TrackingContextEnum.X_CORRELATION_ID.getHeaderKey()));
-        response.setHeader(TrackingContextEnum.X_CORRELATION_ID.getHeaderKey(), ThreadContext.get(TrackingContextEnum.X_CORRELATION_ID.getThreadKey()));
-        chain.doFilter(request, response);
-        log.info("{}: {} ms ", request.getRequestURI(), System.currentTimeMillis() - time);
-        ThreadContext.clearAll();
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) {
+        try {
+            long time = System.currentTimeMillis();
+            this.generateCorrelationIdIfNotExists(request.getHeader(TrackingContextEnum.X_CORRELATION_ID.getHeaderKey()));
+            response.setHeader(TrackingContextEnum.X_CORRELATION_ID.getHeaderKey(), ThreadContext.get(TrackingContextEnum.X_CORRELATION_ID.getThreadKey()));
+            chain.doFilter(request, response);
+            log.info("{}: {} ms ", request.getRequestURI(), System.currentTimeMillis() - time);
+            ThreadContext.clearAll();
+        } catch (Exception e) {
+            log.error("[FILTER]: An error occur: {}", e.getMessage());
+        }
     }
 
     private void generateCorrelationIdIfNotExists(String xCorrelationId) {

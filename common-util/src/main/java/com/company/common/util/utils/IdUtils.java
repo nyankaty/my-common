@@ -1,15 +1,11 @@
-package com.company.common.util;
+package com.company.common.util.utils;
 
 import java.util.Random;
 import java.util.UUID;
 
-@SuppressWarnings("java:S1068")
 public final class IdUtils {
 
     private static final char[] ENCODING_CHARS = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'};
-    private static final int MASK = 31;
-    private static final int MASK_BITS = 5;
-    private static final long TIMESTAMP_OVERFLOW_MASK = -281474976710656L;
     private static final Random random = new Random();
 
     public static String nextUUID() {

@@ -1,4 +1,4 @@
-package com.company.common.spring.locale;
+package com.company.common.spring.i18n;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +12,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 @Configuration
-public class CustomLocaleResolver extends AcceptHeaderLocaleResolver implements WebMvcConfigurer {
+public class CustomLocaleResolver extends AcceptHeaderLocaleResolver {
 
     final AppConfigurationProperties appConfigurationProperties;
     private final List<Locale> locales = new ArrayList<>();
@@ -43,7 +42,7 @@ public class CustomLocaleResolver extends AcceptHeaderLocaleResolver implements 
     @Bean
     public ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource rs = new ResourceBundleMessageSource();
-        rs.setBasename("messages");
+        rs.setBasename("classpath:i18n/messages");
         rs.setDefaultEncoding("UTF-8");
         rs.setUseCodeAsDefaultMessage(true);
         return rs;

@@ -1,10 +1,10 @@
-package com.company.common.util;
+package com.company.common.util.constant;
 
 import java.util.List;
 
-public final class Constant {
+public final class Constants {
 
-    private Constant() {
+    private Constants() {
         throw new IllegalStateException("Utility class");
     }
 

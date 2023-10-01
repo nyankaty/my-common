@@ -13,7 +13,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
-import java.io.Serializable;
 import java.time.Instant;
 
 @MappedSuperclass
@@ -22,7 +21,7 @@ import java.time.Instant;
 @ToString
 @RequiredArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public abstract class AuditableEntity implements Serializable {
+public abstract class AuditableEntity {
 
     private static final long serialVersionUID = 1L;
 

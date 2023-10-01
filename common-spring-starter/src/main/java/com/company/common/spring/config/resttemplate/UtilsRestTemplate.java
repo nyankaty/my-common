@@ -12,7 +12,6 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpResponse;
 
 @Configuration
-@SuppressWarnings("all")
 public class UtilsRestTemplate {
     private static final Logger log = LoggerFactory.getLogger(UtilsRestTemplate.class);
 

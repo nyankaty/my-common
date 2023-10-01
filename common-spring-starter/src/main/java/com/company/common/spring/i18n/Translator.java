@@ -1,4 +1,4 @@
-package com.company.common.spring.locale;
+package com.company.common.spring.i18n;
 
 import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +7,6 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
 
 @Component
-@SuppressWarnings("java:S3010")
 public class Translator {
     private static ResourceBundleMessageSource messageSource;
 

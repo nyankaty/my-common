@@ -2,8 +2,8 @@ package com.company.common.persistence;
 
 import org.springframework.data.jpa.domain.Specification;
 
-@SuppressWarnings("java:S1221")
 public interface SpecBuilder {
+
     static <T> Specification<T> equal(String key, Object value) {
         return (root, criteriaQuery, builder) -> builder.equal(root.get(key), value);
     }

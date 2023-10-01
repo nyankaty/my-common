@@ -1,5 +1,6 @@
-package com.company.common.util;
+package com.company.common.util.utils;
 
+import com.company.common.util.constant.StringPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -12,7 +13,6 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@SuppressWarnings("java:S3011")
 public final class DataUtil {
 
     private static final Logger log = LoggerFactory.getLogger(DataUtil.class);

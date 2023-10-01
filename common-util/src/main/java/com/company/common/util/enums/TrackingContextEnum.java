@@ -1,10 +1,10 @@
-package com.company.common.spring.constant;
+package com.company.common.util.enums;
 
 public enum TrackingContextEnum {
-    X_FORWARD_FOR("x-forwarded-for", "forwardIP"),
-    X_REAL_IP("x-real-ip", "clientIP"),
-    X_REQUEST_ID("x-request-id", "requestID"),
-    X_CORRELATION_ID("X-Correlation-ID", "correlationID");
+    X_FORWARD_FOR("X-Forwarded-For", "forwardIP"),
+    X_REAL_IP("X-Real-Ip", "clientIP"),
+    X_REQUEST_ID("X-Request-Id", "requestID"),
+    X_CORRELATION_ID("X-Correlation-Id", "correlationID");
 
     private final String headerKey;
     private final String threadKey;
@@ -17,7 +17,7 @@ public enum TrackingContextEnum {
         return this.threadKey;
     }
 
-    private TrackingContextEnum(final String headerKey, final String threadKey) {
+    TrackingContextEnum(final String headerKey, final String threadKey) {
         this.headerKey = headerKey;
         this.threadKey = threadKey;
     }

@@ -26,13 +26,11 @@
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
-            <version>3.1.0</version>
         </dependency>
 
         <dependency>
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>
-            <version>5.2.1.RELEASE</version>
         </dependency>
     </dependencies>
 </project>

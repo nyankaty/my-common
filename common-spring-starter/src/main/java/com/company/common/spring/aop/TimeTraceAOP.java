@@ -1,7 +1,7 @@
 package com.company.common.spring.aop;
 
 import com.company.common.spring.aop.annotation.TimeTraceAspect;
-import com.company.common.util.DateUtil;
+import com.company.common.util.utils.DateUtil;
 import de.vandermeer.asciitable.AsciiTable;
 import java.util.Date;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -21,10 +21,6 @@ import org.springframework.context.annotation.Configuration;
 )
 public class TimeTraceAOP {
     private static final Logger log = LoggerFactory.getLogger(TimeTraceAOP.class);
-
-    public TimeTraceAOP() {
-        // no arg constructor
-    }
 
     @Pointcut("@annotation(timeTraceAspect)")
     public void pointcutAnnotationTimeTrace(TimeTraceAspect timeTraceAspect) {
