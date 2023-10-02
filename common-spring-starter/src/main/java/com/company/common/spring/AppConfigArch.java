@@ -15,7 +15,4 @@ import org.springframework.context.annotation.Configuration;
 )
 public class AppConfigArch {
 
-    public AppConfigArch() {
-        // no arg constructor
-    }
 }

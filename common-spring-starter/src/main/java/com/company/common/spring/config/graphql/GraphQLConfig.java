@@ -14,10 +14,6 @@ import org.springframework.context.annotation.Configuration;
 )
 public class GraphQLConfig {
 
-    public GraphQLConfig() {
-        // no arg constructor
-    }
-
     @Bean
     public GraphQLSchema customSchema(SchemaParser schemaParser) {
         return Federation.transform(schemaParser.makeExecutableSchema()).fetchEntities(env -> env.getArgument("representations")).build();

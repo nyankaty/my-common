@@ -11,8 +11,5 @@ import org.springframework.context.annotation.Configuration;
         exclude = {DataSourceAutoConfiguration.class}
 )
 public class CommonJPAConfig {
-    
-    public CommonJPAConfig() {
-        // no arg constructor
-    }
+
 }

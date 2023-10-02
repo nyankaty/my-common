@@ -7,11 +7,8 @@ import com.company.common.model.validator.annotation.NotNumber;
 import org.springframework.util.StringUtils;
 
 public class NotNumberValidator implements ConstraintValidator<NotNumber, String> {
-    NotNumber notCorrectFormatDate;
 
-    public NotNumberValidator() {
-        // no arg constructor
-    }
+    NotNumber notCorrectFormatDate;
 
     public void initialize(NotNumber constraintAnnotation) {
         this.notCorrectFormatDate = constraintAnnotation;

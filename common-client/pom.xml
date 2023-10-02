@@ -12,19 +12,16 @@
     <artifactId>common-client</artifactId>
 
     <dependencies>
-        <!-- client lib -->
-<!--        <dependency>-->
-<!--            <groupId>io.projectreactor</groupId>-->
-<!--            <artifactId>reactor-core</artifactId>-->
-<!--            <version>3.3.2.RELEASE</version>-->
-<!--        </dependency>-->
-
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+            <version>3.4.31</version>
+        </dependency>
     </dependencies>
 
 </project>

@@ -18,7 +18,7 @@ import org.springframework.http.client.ClientHttpResponse;
 public class InterceptorDefault implements ClientHttpRequestInterceptor {
 
     private static final Logger log = LoggerFactory.getLogger(InterceptorDefault.class);
-    final AppConfigurationProperties appConfigurationProperties;
+    private final AppConfigurationProperties appConfigurationProperties;
     private final UtilsRestTemplate utilsRestTemplate;
 
     @Autowired
@@ -30,7 +30,7 @@ public class InterceptorDefault implements ClientHttpRequestInterceptor {
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
         try {
             HttpHeaders headers = request.getHeaders();
-            this.utilsRestTemplate.addHeader(headers, "Accept-Language", "vi");
+            this.utilsRestTemplate.addHeader(headers, "Accept", "*/*");
         } catch (Exception var5) {
             log.error("Interceptor Rest error : ", var5);
         }

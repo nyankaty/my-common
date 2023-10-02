@@ -8,10 +8,6 @@ import org.springframework.stereotype.Component;
 public class ApplicationContextProvider implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
-    public ApplicationContextProvider() {
-        // no arg constructor
-    }
-
     public static Object getBean(String beanName) {
         return applicationContext.getBean(beanName);
     }

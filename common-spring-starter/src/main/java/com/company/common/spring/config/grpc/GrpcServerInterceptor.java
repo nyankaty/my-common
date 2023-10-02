@@ -32,10 +32,6 @@ public class GrpcServerInterceptor implements ServerInterceptor {
     @Autowired
     GRpcServerPropertiesCustom gRpcServerPropertiesCustom;
 
-    public GrpcServerInterceptor() {
-        // no arg constructor
-    }
-
     public <M, R> Listener<M> interceptCall(ServerCall<M, R> serverCall, Metadata metadata, ServerCallHandler<M, R> serverCallHandler) {
         final String requestId = metadata.get(REQUEST_ID_KEY);
         ThreadContext.put("X-Request-Id", requestId);

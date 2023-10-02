@@ -10,6 +10,7 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 public class CachedBodyHttpServletRequest extends ContentCachingRequestWrapper {
+
     private byte[] cachedBody;
 
     public CachedBodyHttpServletRequest(ContentCachingRequestWrapper request) throws IOException {

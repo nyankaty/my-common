@@ -28,10 +28,6 @@ public class AuthConfigurationProperties {
     @Autowired(required = false)
     private AuthConfigurationProperties.AuthTypePublicKey key;
 
-    public AuthConfigurationProperties() {
-        // no arg constructor
-    }
-
     public boolean isEnabled() {
         return this.enabled;
     }
@@ -69,10 +65,6 @@ public class AuthConfigurationProperties {
     public static class AuthTypePublicKey {
         @Value("${app.auth.key.public-key}")
         private String publicKey;
-
-        public AuthTypePublicKey() {
-            // no arg constructor
-        }
 
         public String getPublicKey() {
             return this.publicKey;

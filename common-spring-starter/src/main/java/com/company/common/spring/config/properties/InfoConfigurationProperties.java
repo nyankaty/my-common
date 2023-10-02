@@ -24,10 +24,6 @@ public class InfoConfigurationProperties {
     @Value("${info.build.version}")
     private String version;
 
-    public InfoConfigurationProperties() {
-        // no arg constructor
-    }
-
     public String getArtifact() {
         return this.artifact;
     }

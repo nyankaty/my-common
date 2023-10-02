@@ -40,10 +40,6 @@ public class DataSourceConfig {
     @Value("${app.datasource.default.url}")
     private String urlForLog;
 
-    public DataSourceConfig() {
-        // no arg constructor
-    }
-
     @Primary
     @Bean(name = {"defaultDataSourceProperties"})
     @ConfigurationProperties("app.datasource.default")

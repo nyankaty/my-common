@@ -11,10 +11,6 @@ import javax.validation.ConstraintValidatorContext;
 public class ValueOfEnumValidator implements ConstraintValidator<ValueOfEnum, CharSequence> {
     private List<String> acceptedValues;
 
-    public ValueOfEnumValidator() {
-        // no arg constructor
-    }
-
     public void initialize(ValueOfEnum annotation) {
         this.acceptedValues = Stream.of(annotation.enumClass().getEnumConstants()).map(Enum::name).collect(Collectors.toList());
     }

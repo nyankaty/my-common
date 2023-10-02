@@ -12,7 +12,4 @@ import org.springframework.context.annotation.Configuration;
 )
 public class CommonKafkaConfig {
 
-    public CommonKafkaConfig() {
-        // no arg constructor
-    }
 }

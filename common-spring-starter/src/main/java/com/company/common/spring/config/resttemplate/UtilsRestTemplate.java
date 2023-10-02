@@ -15,10 +15,6 @@ import org.springframework.http.client.ClientHttpResponse;
 public class UtilsRestTemplate {
     private static final Logger log = LoggerFactory.getLogger(UtilsRestTemplate.class);
 
-    public UtilsRestTemplate() {
-        // no arg constructor
-    }
-
     public void trace(HttpRequest request, byte[] body, ClientHttpResponse response) {
         StringBuilder str = new StringBuilder();
 
@@ -35,8 +31,8 @@ public class UtilsRestTemplate {
                     Throwable var10 = null;
 
                     try {
-                        str.append("\n Request = ").append(" \n").append("Request to : ").append(request.getURI().toString()).append(" \n").append("Method     : ").append(request.getMethodValue()).append(" \n").append("Header     : ").append(request.getHeaders()).append(" \n").append("Body       : ").append(new String(body, StandardCharsets.UTF_8)).append(" \n").append(" \n");
-                        str.append("Response = ").append(" \n").append("Status code  : {}").append(response.getStatusCode()).append(" \n").append("Headers      : {}").append(response.getHeaders()).append(" \n");
+                        str.append("\n Request = ").append(" \n").append("Request to : ").append(request.getURI()).append(" \n").append("Method     : ").append(request.getMethodValue()).append(" \n").append("Header     : ").append(request.getHeaders()).append(" \n").append("Body       : ").append(new String(body, StandardCharsets.UTF_8)).append(" \n").append(" \n");
+                        str.append("Response = ").append(" \n").append("Status code  : ").append(response.getStatusCode()).append(" \n").append("Headers      : ").append(response.getHeaders()).append(" \n");
                         StringBuilder inputStringBuilder = new StringBuilder();
 
                         for(String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
@@ -44,7 +40,7 @@ public class UtilsRestTemplate {
                             inputStringBuilder.append('\n');
                         }
 
-                        str.append("Response body: {}").append(inputStringBuilder.toString()).append(" \n").append(" \n");
+                        str.append("Response body: ").append(inputStringBuilder).append(" \n").append(" \n");
                     } catch (Throwable var76) {
                         var10 = var76;
                         throw var76;

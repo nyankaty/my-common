@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -15,13 +16,10 @@ import reactor.core.publisher.Flux;
 import java.time.Duration;
 import java.util.function.Consumer;
 
+@Component
 public class WebClientTemplate implements ClientTemplate {
 
     private static final Logger log = LoggerFactory.getLogger(WebClientTemplate.class);
-
-    public WebClientTemplate() {
-        // no arg constructor
-    }
 
     public <R> Flux<R> get(String uri, Consumer<HttpHeaders> headersConsumer, int timeOutSeconds, Class<R> responseClass, Consumer<? super R> consumer) {
         log.info("Start non-blocking GET uri: {}", uri);

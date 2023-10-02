@@ -18,10 +18,6 @@ import org.springframework.context.annotation.Primary;
 public class KafkaConfigurationConsumer extends Consumer {
     private boolean enabled;
 
-    public KafkaConfigurationConsumer() {
-        // no arg constructor
-    }
-
     public boolean isEnabled() {
         return this.enabled;
     }

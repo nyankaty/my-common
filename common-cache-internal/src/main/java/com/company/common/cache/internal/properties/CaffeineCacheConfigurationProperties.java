@@ -36,10 +36,6 @@ public class CaffeineCacheConfigurationProperties {
     @Value("${app.cache.internal.removalListener}")
     Boolean removalListener;
 
-    public CaffeineCacheConfigurationProperties() {
-        // no arg constructor
-    }
-
     public String getApplicationShortName() {
         return this.applicationShortName;
     }

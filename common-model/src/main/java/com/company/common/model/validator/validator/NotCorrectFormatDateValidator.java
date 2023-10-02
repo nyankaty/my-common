@@ -11,10 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 public class NotCorrectFormatDateValidator implements ConstraintValidator<NotCorrectFormatDate, String> {
     NotCorrectFormatDate notCorrectFormatDate;
 
-    public NotCorrectFormatDateValidator() {
-        // no arg constructor
-    }
-
     public void initialize(NotCorrectFormatDate constraintAnnotation) {
         this.notCorrectFormatDate = constraintAnnotation;
     }
@@ -30,7 +26,7 @@ public class NotCorrectFormatDateValidator implements ConstraintValidator<NotCor
                 }
             }
 
-            for(int i = 0; i < this.notCorrectFormatDate.values().length; ++i) {
+            for (int i = 0; i < this.notCorrectFormatDate.values().length; ++i) {
                 Date date = DateUtil.formatDate(value, this.notCorrectFormatDate.values()[i]);
                 if (date != null) {
                     return true;

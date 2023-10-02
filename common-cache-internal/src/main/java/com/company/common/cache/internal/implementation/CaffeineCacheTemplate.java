@@ -27,10 +27,6 @@ public class CaffeineCacheTemplate implements InternalCacheTemplate {
     @Autowired
     CaffeineCacheConfigurationProperties properties;
 
-    public CaffeineCacheTemplate() {
-        // no arg constructor
-    }
-
     private String keyGen(Object key) {
         return this.properties.getApplicationShortName() + "::" + key;
     }

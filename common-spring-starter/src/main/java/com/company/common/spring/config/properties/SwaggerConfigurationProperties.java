@@ -19,10 +19,6 @@ public class SwaggerConfigurationProperties {
     private String contactUrl = "contactUrl";
     private String version = "1.0.0";
 
-    public SwaggerConfigurationProperties() {
-        // no arg constructor
-    }
-
     public boolean isEnabled() {
         return this.enabled;
     }

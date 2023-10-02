@@ -19,10 +19,6 @@ public class KafkaConfigurationProperties extends KafkaProperties {
 
     private boolean enabled;
 
-    public KafkaConfigurationProperties() {
-        // no arg constructor
-    }
-
     public boolean isEnabled() {
         return this.enabled;
     }

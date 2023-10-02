@@ -49,10 +49,6 @@ public class AppConfigurationProperties {
     private List<String> localeResolverLanguages = Arrays.asList("en", "vi");
     private String defaultLanguage = "en";
 
-    public AppConfigurationProperties() {
-        // no arg constructor
-    }
-
     public String getApplicationShortName() {
         return this.applicationShortName;
     }

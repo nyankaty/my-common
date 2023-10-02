@@ -28,10 +28,6 @@ public class GRpcServerPropertiesCustom extends GRpcServerProperties {
     @Value("${grpc.server-log}")
     private boolean serverLog;
 
-    public GRpcServerPropertiesCustom() {
-        // no arg constructor
-    }
-
     public Long getClientRequestTimeoutMs() {
         return this.clientRequestTimeoutMs;
     }

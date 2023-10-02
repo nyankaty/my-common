@@ -7,12 +7,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.company.common.spring.config.properties.AppConfigurationProperties;
 import com.company.common.util.enums.TrackingContextEnum;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Configuration

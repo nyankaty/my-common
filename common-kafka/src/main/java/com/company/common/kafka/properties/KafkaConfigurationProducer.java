@@ -33,10 +33,6 @@ public class KafkaConfigurationProducer extends Producer {
     @Value("${spring.kafka.producer.queue-size}")
     private int queueSize;
 
-    public KafkaConfigurationProducer() {
-        // no arg constructor
-    }
-
     public boolean isEnabled() {
         return this.enabled;
     }
