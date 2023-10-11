@@ -6,6 +6,7 @@ import com.company.common.cache.external.customizer.RedisCacheConfigurationCusto
 import com.company.common.cache.external.customizer.RedisCacheManagerCustomizer;
 import com.company.common.cache.external.customizer.RedisCacheWriterCustomizer;
 import com.company.common.cache.external.customizer.RedisConnectionFactoryCustomizer;
+import com.company.common.cache.external.properties.CustomCacheExpirationsProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
@@ -36,19 +37,17 @@ import com.company.common.cache.external.properties.RedisCacheConfigurationPrope
 )
 public class RedisCacheManagerConfig {
 
-    RedisCacheConfigurationProperties redisCacheConfigurationProperties;
-
-    @Autowired
-    public RedisCacheManagerConfig(RedisCacheConfigurationProperties redisCacheConfigurationProperties) {
-        this.redisCacheConfigurationProperties = redisCacheConfigurationProperties;
-    }
+    @Autowired(required = false)
+    private RedisCacheConfigurationProperties externalCacheProp;
+    @Autowired(required = false)
+    private CustomCacheExpirationsProperties expirationsProp;
 
     @Bean
     public CacheManager redisCacheManager() {
-        RedisConnectionFactory redisConnectionFactory = (new RedisConnectionFactoryCustomizer(this.redisCacheConfigurationProperties)).getRedisConnectionFactory();
+        RedisConnectionFactory redisConnectionFactory = (new RedisConnectionFactoryCustomizer(this.externalCacheProp)).getRedisConnectionFactory();
         RedisCacheWriter redisCacheWriter = (new RedisCacheWriterCustomizer(redisConnectionFactory)).getRedisCacheWriter(true);
-        RedisCacheConfiguration defaultRedisCacheConfiguration = (new RedisCacheConfigurationCustomizer(this.redisCacheConfigurationProperties)).getDefaultRedisCacheConfiguration();
-        Map<String, RedisCacheConfiguration> redisCacheConfigurations = (new RedisCacheConfigurationCustomizer(this.redisCacheConfigurationProperties)).getRedisCacheConfigurations();
+        RedisCacheConfiguration defaultRedisCacheConfiguration = (new RedisCacheConfigurationCustomizer(this.externalCacheProp, this.expirationsProp)).getDefaultRedisCacheConfiguration();
+        Map<String, RedisCacheConfiguration> redisCacheConfigurations = (new RedisCacheConfigurationCustomizer(this.externalCacheProp, this.expirationsProp)).getRedisCacheConfigurations();
         return (new RedisCacheManagerCustomizer(defaultRedisCacheConfiguration, redisCacheConfigurations, redisCacheWriter)).getRedisCacheManager();
     }
 }

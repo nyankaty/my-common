@@ -3,6 +3,7 @@ package com.company.common.cache.external.implementation;
 import com.company.common.cache.external.customizer.RedisConnectionCustomizer;
 import com.company.common.cache.external.customizer.RedisConnectionFactoryCustomizer;
 import com.company.common.cache.external.port.ExternalCacheTemplate;
+import com.company.common.cache.external.properties.CustomCacheExpirationsProperties;
 import com.company.common.cache.external.properties.RedisCacheConfigurationProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -14,13 +15,11 @@ import io.lettuce.core.cluster.api.async.RedisAdvancedClusterAsyncCommands;
 import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisPassword;
-import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClusterConnection;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.Cursor;
@@ -30,7 +29,6 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -51,18 +49,20 @@ public class RedisCacheTemplate implements ExternalCacheTemplate {
     private static final Logger log = LoggerFactory.getLogger(RedisCacheTemplate.class);
     RedisConnection redisConnection;
     RedisTemplate<String, String> redisTemplate;
-    RedisCacheConfigurationProperties externalCacheProp;
+    @Autowired(required = false)
+    private RedisCacheConfigurationProperties externalCacheProp;
+    @Autowired(required = false)
+    private CustomCacheExpirationsProperties expirationsProp;
     private static final ObjectMapper om = new ObjectMapper();
 
-    public RedisCacheTemplate(RedisCacheConfigurationProperties externalCacheProp) {
-        RedisConnectionFactory redisConnectionFactory = (new RedisConnectionFactoryCustomizer(externalCacheProp)).getRedisConnectionFactory();
-        this.redisConnection = (new RedisConnectionCustomizer(redisConnectionFactory)).getRedisConnection();
+    public RedisCacheTemplate() {
+//        RedisConnectionFactory redisConnectionFactory = (new RedisConnectionFactoryCustomizer(externalCacheProp)).getRedisConnectionFactory();
+//        this.redisConnection = (new RedisConnectionCustomizer(redisConnectionFactory)).getRedisConnection();
         this.redisTemplate = new RedisTemplate<>();
-        this.redisTemplate.setConnectionFactory(redisConnectionFactory);
-        this.redisTemplate.setKeySerializer(new StringRedisSerializer());
-        this.redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        this.redisTemplate.afterPropertiesSet();
-        this.externalCacheProp = externalCacheProp;
+//        this.redisTemplate.setConnectionFactory(redisConnectionFactory);
+//        this.redisTemplate.setKeySerializer(new StringRedisSerializer());
+//        this.redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+//        this.redisTemplate.afterPropertiesSet();
     }
 
     private String keyGen(String cacheName, Object key) {
@@ -136,8 +136,8 @@ public class RedisCacheTemplate implements ExternalCacheTemplate {
 
     private String putValueStr(String cacheName, String keyGen, String valueStr) {
         this.redisTemplate.opsForValue().set(keyGen, valueStr);
-        if (this.externalCacheProp.getCacheExpirations().get(cacheName) != null && !this.externalCacheProp.getCacheExpirations().isEmpty()) {
-            this.redisConnection.expire(keyGen.getBytes(StandardCharsets.UTF_8), this.externalCacheProp.getCacheExpirations().get(cacheName));
+        if (this.expirationsProp.getCacheExpirations().get(cacheName) != null && !this.expirationsProp.getCacheExpirations().isEmpty()) {
+            this.redisConnection.expire(keyGen.getBytes(StandardCharsets.UTF_8), this.expirationsProp.getCacheExpirations().get(cacheName));
         } else if (this.externalCacheProp.getCacheDefaultExpiration() != null) {
             this.redisConnection.expire(keyGen.getBytes(StandardCharsets.UTF_8), this.externalCacheProp.getCacheDefaultExpiration());
         }
@@ -249,20 +249,8 @@ public class RedisCacheTemplate implements ExternalCacheTemplate {
         return set;
     }
 
-    private LettuceConnectionFactory getLettuceConnectionFactory() {
-        LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder().build();
-        RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(this.externalCacheProp.getNodes());
-        if (!StringUtils.isEmpty(this.externalCacheProp.getPassword())) {
-            redisClusterConfiguration.setPassword(RedisPassword.of(this.externalCacheProp.getPassword()));
-        }
-
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisClusterConfiguration, clientConfiguration);
-        lettuceConnectionFactory.afterPropertiesSet();
-        return lettuceConnectionFactory;
-    }
-
     private Set<String> keySetCluster(String keyPattern) {
-        LettuceConnectionFactory lettuceConnectionFactory = this.getLettuceConnectionFactory();
+        LettuceConnectionFactory lettuceConnectionFactory = null;
         LettuceClusterConnection con = (LettuceClusterConnection)lettuceConnectionFactory.getClusterConnection();
         RedisAdvancedClusterAsyncCommands<byte[], byte[]> nativeConnection = (RedisAdvancedClusterAsyncCommands) con.getNativeConnection();
         RedisAdvancedClusterCommands<byte[], byte[]> sync = nativeConnection.getStatefulConnection().sync();

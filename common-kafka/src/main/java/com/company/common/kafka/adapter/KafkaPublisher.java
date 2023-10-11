@@ -10,6 +10,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.internals.RecordHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -24,14 +25,10 @@ public abstract class KafkaPublisher {
 
     private static final Logger log = LoggerFactory.getLogger(KafkaPublisher.class);
 
-    public final KafkaTemplate<String, String> kafkaTemplate;
+    @Autowired(required = false)
+    private KafkaTemplate<String, String> kafkaTemplate;
 
-    public final ObjectMapper objectMapper = new ObjectMapper();
-
-    protected KafkaPublisher(KafkaTemplate<String, String> kafkaTemplate) {
-        this.objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-        this.kafkaTemplate = kafkaTemplate;
-    }
+    private final ObjectMapper objectMapper = new ObjectMapper().setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 
     private <T> void sendMessageAsync(T data, final String topic, final ListenableFutureCallback<String> callback) {
         final String message;

@@ -6,9 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Configuration
 @ConditionalOnProperty(
@@ -23,11 +21,20 @@ public class RedisCacheConfigurationProperties {
     @Value("${app.cache.external.applicationShortName}")
     private String applicationShortName;
 
+    @Value("${app.cache.external.delimiter}")
+    private String delimiter;
+
+    @Value("${app.cache.external.cacheDefaultExpiration}")
+    private Long cacheDefaultExpiration;
+
     @Value("${app.cache.external.host}")
     private String host;
 
     @Value("${app.cache.external.port}")
     private int port;
+
+    @Value("${app.cache.external.username}")
+    private String username;
 
     @Value("${app.cache.external.password}")
     private String password;
@@ -35,79 +42,56 @@ public class RedisCacheConfigurationProperties {
     @Value("${app.cache.external.nodes}")
     private List<String> nodes = new ArrayList<>();
 
-    @Value("${app.cache.external.delimiter}")
-    private String delimiter;
+    @Value("${app.cache.external.cluster.enable}")
+    private boolean isCluster;
 
-    @Value("${app.cache.external.cacheDefaultExpiration}")
-    private Long cacheDefaultExpiration;
+    @Value("${app.cache.external.sentinel.enable}")
+    private boolean isSentinel;
 
-    private Map<String, Long> cacheExpirations = new HashMap<>();
+    @Value("${app.cache.external.sentinel.master}")
+    private String sentinelMaster;
 
     public String getApplicationShortName() {
-        return this.applicationShortName;
+        return applicationShortName;
     }
 
     public String getDelimiter() {
-        return this.delimiter;
-    }
-
-    public int getPort() {
-        return this.port;
-    }
-
-    public String getHost() {
-        return this.host;
-    }
-
-    public List<String> getNodes() {
-        return this.nodes;
+        return delimiter;
     }
 
     public Long getCacheDefaultExpiration() {
-        return this.cacheDefaultExpiration;
+        return cacheDefaultExpiration;
     }
 
-    public Map<String, Long> getCacheExpirations() {
-        return this.cacheExpirations;
+    public String getHost() {
+        return host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getPassword() {
-        return this.password;
+        return password;
     }
 
-    public void setApplicationShortName(String applicationShortName) {
-        this.applicationShortName = applicationShortName;
+    public List<String> getNodes() {
+        return nodes;
     }
 
-    public void setDelimiter(String delimiter) {
-        this.delimiter = delimiter;
+    public boolean isCluster() {
+        return isCluster;
     }
 
-    public void setPort(int port) {
-        this.port = port;
+    public boolean isSentinel() {
+        return isSentinel;
     }
 
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public void setNodes(List<String> nodes) {
-        this.nodes = nodes;
-    }
-
-    public void setCacheDefaultExpiration(Long cacheDefaultExpiration) {
-        this.cacheDefaultExpiration = cacheDefaultExpiration;
-    }
-
-    public void setCacheExpirations(Map<String, Long> cacheExpirations) {
-        this.cacheExpirations = cacheExpirations;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String toString() {
-        return "RedisCacheConfigurationProperties(port=" + this.getPort() + ", host=" + this.getHost() + ", nodes=" + this.getNodes() + ", cacheExpirations=" + this.getCacheExpirations() + ", password=" + this.getPassword() + ")";
+    public String getSentinelMaster() {
+        return sentinelMaster;
     }
 }
