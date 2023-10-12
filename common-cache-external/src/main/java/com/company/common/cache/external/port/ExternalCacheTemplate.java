@@ -4,37 +4,36 @@ import java.util.List;
 import java.util.Set;
 
 public interface ExternalCacheTemplate {
-    <T> T getObject(String var1, String var2, Class<T> var3);
 
-    <T> T getObject(String var1, Class<T> var2);
+    <T> T getObject(String key);
 
-    <T> List<T> getObjectAsList(String var1, String var2, Class<T> var3);
+    <T> List<T> getObjectAsList(String cacheName, String key, Class<T> objectClass);
 
-    <T> T getObjectFromList(String var1, String var2, Class<T> var3);
+    <T> T getObjectFromList(String cacheName, String key, Class<T> objectClass);
 
-    <T> T getObjectFromList(String var1, Class<T> var2);
+    <T> T getObjectFromList(String key, Class<T> objectClass);
 
-    <T> List<T> getObjectAsList(String var1, Class<T> var2);
+    <T> List<T> getObjectAsList(String key, Class<T> objectClass);
 
-    <T> String putObject(String var1, String var2, T var3);
+    <T> String putObject(String cacheName, String key, T value);
 
-    <T> String putObject(String var1, T var2);
+    <T> String putObject(String key, T value);
 
-    <T> String putObjectAsList(String var1, String var2, List<T> var3);
+    <T> String putObjectAsList(String cacheName, String key, List<T> valueList);
 
-    <T> String putObjectAsList(String var1, List<T> var2);
+    <T> String putObjectAsList(String key, List<T> value);
 
-    <T> String putObjectToList(String var1, String var2, T var3);
+    <T> String putObjectToList(String cacheName, String key, T value);
 
-    <T> String putObjectToList(String var1, T var2);
+    <T> String putObjectToList(String key, T value);
 
-    boolean hasKey(String var1, String var2);
+    boolean hasKey(String cacheName, String key);
 
-    boolean hasKey(String var1);
+    boolean hasKey(String key);
 
-    void invalidate(String var1, String var2);
+    void invalidate(String cacheName, String key);
 
-    void invalidate(String var1);
+    void invalidate(String key);
 
-    Set<String> keySet(String var1, long var2);
+    Set<String> keySet(String keyPattern, long count);
 }

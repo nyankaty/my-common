@@ -11,6 +11,6 @@ public class RedisCacheWriterCustomizer {
     }
 
     public RedisCacheWriter getRedisCacheWriter(boolean lock) {
-        return lock ? RedisCacheWriter.lockingRedisCacheWriter(this.redisConnectionFactory) : RedisCacheWriter.nonLockingRedisCacheWriter(this.redisConnectionFactory);
+        return lock ? RedisCacheWriter.lockingRedisCacheWriter(redisConnectionFactory) : RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory);
     }
 }

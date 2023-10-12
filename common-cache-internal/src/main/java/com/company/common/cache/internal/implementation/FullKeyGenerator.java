@@ -6,8 +6,6 @@ import com.company.common.cache.internal.properties.CaffeineCacheConfigurationPr
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.util.StringUtils;
 
-import org.jetbrains.annotations.NotNull;
-
 public class FullKeyGenerator implements KeyGenerator {
 
     CaffeineCacheConfigurationProperties properties;
@@ -16,8 +14,7 @@ public class FullKeyGenerator implements KeyGenerator {
         this.properties = properties;
     }
 
-    @NotNull
-    public Object generate(Object target, Method method, @NotNull Object... params) {
-        return this.properties.getApplicationShortName() + "::" + target.getClass().getSimpleName() + "_" + method.getName() + "_" + StringUtils.arrayToDelimitedString(params, "_");
+    public Object generate(Object target, Method method, Object... params) {
+        return this.properties.getApplicationShortName() + "::" + target.getClass().getName() + "_" + method.getName() +  + StringUtils.arrayToDelimitedString(params, "_");
     }
 }

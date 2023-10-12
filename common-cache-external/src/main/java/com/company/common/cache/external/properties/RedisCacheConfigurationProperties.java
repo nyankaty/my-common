@@ -6,7 +6,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @ConditionalOnProperty(
@@ -26,6 +28,8 @@ public class RedisCacheConfigurationProperties {
 
     @Value("${app.cache.external.cacheDefaultExpiration}")
     private Long cacheDefaultExpiration;
+
+    private Map<String, Long> cacheExpirations = new HashMap<>();
 
     @Value("${app.cache.external.host}")
     private String host;
@@ -61,6 +65,10 @@ public class RedisCacheConfigurationProperties {
 
     public Long getCacheDefaultExpiration() {
         return cacheDefaultExpiration;
+    }
+
+    public Map<String, Long> getCacheExpirations() {
+        return cacheExpirations;
     }
 
     public String getHost() {

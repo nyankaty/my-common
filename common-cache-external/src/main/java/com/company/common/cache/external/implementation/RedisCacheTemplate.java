@@ -1,13 +1,9 @@
 package com.company.common.cache.external.implementation;
 
-import com.company.common.cache.external.customizer.RedisConnectionCustomizer;
-import com.company.common.cache.external.customizer.RedisConnectionFactoryCustomizer;
+
 import com.company.common.cache.external.port.ExternalCacheTemplate;
-import com.company.common.cache.external.properties.CustomCacheExpirationsProperties;
-import com.company.common.cache.external.properties.RedisCacheConfigurationProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import io.lettuce.core.KeyScanCursor;
 import io.lettuce.core.ScanArgs;
@@ -17,16 +13,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceClusterConnection;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -43,41 +36,26 @@ import java.util.stream.Collectors;
         havingValue = "true"
 )
 @Component
-@ComponentScan({"com.company.common.cache.properties"})
 public class RedisCacheTemplate implements ExternalCacheTemplate {
 
     private static final Logger log = LoggerFactory.getLogger(RedisCacheTemplate.class);
-    RedisConnection redisConnection;
-    RedisTemplate<String, String> redisTemplate;
-    @Autowired(required = false)
-    private RedisCacheConfigurationProperties externalCacheProp;
-    @Autowired(required = false)
-    private CustomCacheExpirationsProperties expirationsProp;
-    private static final ObjectMapper om = new ObjectMapper();
 
-    public RedisCacheTemplate() {
-//        RedisConnectionFactory redisConnectionFactory = (new RedisConnectionFactoryCustomizer(externalCacheProp)).getRedisConnectionFactory();
-//        this.redisConnection = (new RedisConnectionCustomizer(redisConnectionFactory)).getRedisConnection();
-        this.redisTemplate = new RedisTemplate<>();
-//        this.redisTemplate.setConnectionFactory(redisConnectionFactory);
-//        this.redisTemplate.setKeySerializer(new StringRedisSerializer());
-//        this.redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-//        this.redisTemplate.afterPropertiesSet();
-    }
+    RedisConnection redisConnection;
+    @Autowired(required = false)
+    private RedisTemplate<String, Object> redisTemplate;
+
+
 
     private String keyGen(String cacheName, Object key) {
+        KeyGen f = new KeyGen();
+        KeyGen.generate(null, null, null)
         return cacheName.equals("") ? key.toString() : this.externalCacheProp.getApplicationShortName() + this.externalCacheProp.getDelimiter() + cacheName + this.externalCacheProp.getDelimiter() + key;
     }
 
-    public <T> T getObject(String cacheName, String key, Class<T> objectClass) {
-        String keyGen = this.keyGen(cacheName, key);
-        log.info("RedisCacheTemplate get: cacheName = {}, key = {}", cacheName, keyGen);
-        String valueStr = this.redisTemplate.opsForValue().get(keyGen);
-        return this.readObjectFromValueStr(valueStr, keyGen, objectClass);
-    }
-
-    public <T> T getObject(String key, Class<T> objectClass) {
-        return this.getObject("", key, objectClass);
+    @Cacheable(key = "1", keyGenerator = "sg")
+    public <T> T getObject(String key) {
+        log.info("RedisCacheTemplate get: key = {}", key);
+        return (T) this.redisTemplate.opsForValue().get(key);
     }
 
     public <T> List<T> getObjectAsList(String cacheName, String key, Class<T> objectClass) {
@@ -251,7 +229,7 @@ public class RedisCacheTemplate implements ExternalCacheTemplate {
 
     private Set<String> keySetCluster(String keyPattern) {
         LettuceConnectionFactory lettuceConnectionFactory = null;
-        LettuceClusterConnection con = (LettuceClusterConnection)lettuceConnectionFactory.getClusterConnection();
+        LettuceClusterConnection con = (LettuceClusterConnection) lettuceConnectionFactory.getClusterConnection();
         RedisAdvancedClusterAsyncCommands<byte[], byte[]> nativeConnection = (RedisAdvancedClusterAsyncCommands) con.getNativeConnection();
         RedisAdvancedClusterCommands<byte[], byte[]> sync = nativeConnection.getStatefulConnection().sync();
         KeyScanCursor<byte[]> scanCursor = null;

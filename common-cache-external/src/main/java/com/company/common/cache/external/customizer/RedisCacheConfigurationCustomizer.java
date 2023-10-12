@@ -1,6 +1,5 @@
 package com.company.common.cache.external.customizer;
 
-import com.company.common.cache.external.properties.CustomCacheExpirationsProperties;
 import com.company.common.cache.external.properties.RedisCacheConfigurationProperties;
 import java.time.Duration;
 import java.util.Map;
@@ -12,29 +11,27 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.util.StringUtils;
 
 public class RedisCacheConfigurationCustomizer {
-    RedisCacheConfigurationProperties properties;
-    CustomCacheExpirationsProperties expirationsProperties;
+    RedisCacheConfigurationProperties props;
 
-    public RedisCacheConfigurationCustomizer(RedisCacheConfigurationProperties properties, CustomCacheExpirationsProperties expirationsProperties) {
-        this.properties = properties;
-        this.expirationsProperties = expirationsProperties;
+    public RedisCacheConfigurationCustomizer(RedisCacheConfigurationProperties props) {
+        this.props = props;
     }
 
     public RedisCacheConfiguration getDefaultRedisCacheConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig().serializeValuesWith(
                 RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())
         ).computePrefixWith(cacheName -> {
-            String prefix = this.properties.getApplicationShortName() + this.properties.getDelimiter();
+            String prefix = props.getApplicationShortName() + props.getDelimiter();
             if (StringUtils.hasLength(cacheName)) {
-                prefix = prefix + cacheName + this.properties.getDelimiter();
+                prefix = prefix + cacheName + props.getDelimiter();
             }
 
             return prefix;
-        }).entryTtl(Duration.ofSeconds(this.properties.getCacheDefaultExpiration()));
+        }).entryTtl(Duration.ofSeconds(props.getCacheDefaultExpiration()));
     }
 
     public Map<String, RedisCacheConfiguration> getRedisCacheConfigurations() {
-        return this.expirationsProperties.getCacheExpirations().entrySet()
+        return props.getCacheExpirations().entrySet()
                 .stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,

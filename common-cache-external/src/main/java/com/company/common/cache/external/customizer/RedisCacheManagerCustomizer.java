@@ -18,6 +18,6 @@ public class RedisCacheManagerCustomizer {
     }
 
     public RedisCacheManager getRedisCacheManager() {
-        return new RedisCacheManager(this.redisCacheWriter, this.defaultRedisCacheConfiguration, this.redisCacheConfigurations);
+        return new RedisCacheManager(redisCacheWriter, defaultRedisCacheConfiguration, redisCacheConfigurations);
     }
 }
