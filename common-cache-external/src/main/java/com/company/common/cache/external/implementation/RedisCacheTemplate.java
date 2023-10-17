@@ -1,10 +1,7 @@
 package com.company.common.cache.external.implementation;
 
-
 import com.company.common.cache.external.port.ExternalCacheTemplate;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.type.CollectionType;
+import com.company.common.cache.external.properties.RedisCacheConfigurationProperties;
 import io.lettuce.core.KeyScanCursor;
 import io.lettuce.core.ScanArgs;
 import io.lettuce.core.cluster.api.async.RedisAdvancedClusterAsyncCommands;
@@ -13,21 +10,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceClusterConnection;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.time.Duration;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,160 +34,52 @@ public class RedisCacheTemplate implements ExternalCacheTemplate {
     private static final Logger log = LoggerFactory.getLogger(RedisCacheTemplate.class);
 
     RedisConnection redisConnection;
-    @Autowired(required = false)
+    RedisConnectionFactory redisConnectionFactory;
+    @Autowired
     private RedisTemplate<String, Object> redisTemplate;
-
-
+    @Autowired
+    private RedisCacheConfigurationProperties props;
 
     private String keyGen(String cacheName, Object key) {
-        KeyGen f = new KeyGen();
-        KeyGen.generate(null, null, null)
-        return cacheName.equals("") ? key.toString() : this.externalCacheProp.getApplicationShortName() + this.externalCacheProp.getDelimiter() + cacheName + this.externalCacheProp.getDelimiter() + key;
+        return cacheName.equals("") ? key.toString() : this.props.getApplicationShortName() + this.props.getDelimiter() + cacheName + this.props.getDelimiter() + key;
     }
 
-    @Cacheable(key = "1", keyGenerator = "sg")
     public <T> T getObject(String key) {
-        log.info("RedisCacheTemplate get: key = {}", key);
-        return (T) this.redisTemplate.opsForValue().get(key);
+        return this.getObject("", key);
     }
 
-    public <T> List<T> getObjectAsList(String cacheName, String key, Class<T> objectClass) {
+    public <T> T getObject(String cacheName, String key) {
         String keyGen = this.keyGen(cacheName, key);
-        log.info("RedisCacheTemplate get: cacheName = {}, key = {}", cacheName, keyGen);
-        String valueStr = this.redisTemplate.opsForValue().get(keyGen);
-        if (valueStr == null) {
-            log.info("Key {} does not exist", keyGen);
-            return Collections.emptyList();
-        } else {
-            CollectionType listType = om.getTypeFactory().constructCollectionType(ArrayList.class, objectClass);
-            om.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-            try {
-                return om.readValue(valueStr, listType);
-            } catch (JsonProcessingException var9) {
-                var9.printStackTrace();
-                log.info("Invalid value format, value: {}", valueStr);
-                return Collections.emptyList();
-            }
-        }
+        log.info("Redis GET: key = {}", keyGen);
+        return (T) redisTemplate.opsForValue().get(keyGen);
     }
 
-    private <T> T readObjectFromValueStr(String valueStr, String keyGen, Class<T> objectClass) {
-        if (valueStr == null) {
-            log.info("Key {} does not exist", keyGen);
-            return null;
-        } else if (objectClass == String.class) {
-            log.info("String value format, value: {}", valueStr);
-            return (T) valueStr;
-        } else {
-            try {
-                return om.readValue(valueStr, objectClass);
-            } catch (JsonProcessingException var6) {
-                var6.printStackTrace();
-                log.info("Invalid value format, value: {}", valueStr);
-                return null;
-            }
-        }
-    }
-
-    public <T> T getObjectFromList(String cacheName, String key, Class<T> objectClass) {
+    public void putObject(String cacheName, String key, Object value) {
         String keyGen = this.keyGen(cacheName, key);
-        log.info("RedisCacheTemplate get: cacheName = {}, key = {}", cacheName, keyGen);
-        String valueStr = this.redisTemplate.opsForList().leftPop(keyGen);
-        return this.readObjectFromValueStr(valueStr, keyGen, objectClass);
+        long expireSeconds = getExpireSecondsConfig(cacheName);
+        log.info("Redis SET: key = {}, expire = {} seconds", keyGen, expireSeconds);
+        this.redisTemplate.opsForValue().set(keyGen, value, Duration.ofSeconds(expireSeconds));
     }
 
-    public <T> T getObjectFromList(String key, Class<T> objectClass) {
-        return this.getObjectFromList("", key, objectClass);
+    public void putObject(String key, Object value) {
+        this.putObject("", key, value);
     }
 
-    public <T> List<T> getObjectAsList(String key, Class<T> objectClass) {
-        return this.getObjectAsList("", key, objectClass);
-    }
-
-    private String putValueStr(String cacheName, String keyGen, String valueStr) {
-        this.redisTemplate.opsForValue().set(keyGen, valueStr);
-        if (this.expirationsProp.getCacheExpirations().get(cacheName) != null && !this.expirationsProp.getCacheExpirations().isEmpty()) {
-            this.redisConnection.expire(keyGen.getBytes(StandardCharsets.UTF_8), this.expirationsProp.getCacheExpirations().get(cacheName));
-        } else if (this.externalCacheProp.getCacheDefaultExpiration() != null) {
-            this.redisConnection.expire(keyGen.getBytes(StandardCharsets.UTF_8), this.externalCacheProp.getCacheDefaultExpiration());
-        }
-
-        return valueStr;
-    }
-
-    public <T> String putObject(String cacheName, String key, T value) {
+    public void putObject(String cacheName, String key, Object value, Duration duration) {
         String keyGen = this.keyGen(cacheName, key);
-        log.info("RedisCacheTemplate put: cacheName = {}, key = {}, value = {}", cacheName, keyGen, value);
-        String valueStr;
-        if (value instanceof String) {
-            log.info("Put value as String, value: {}", value);
-            valueStr = (String)value;
-        } else {
-            try {
-                valueStr = om.writeValueAsString(value);
-            } catch (JsonProcessingException var7) {
-                var7.printStackTrace();
-                log.info("Invalid value format, value: {}", value);
-                return null;
-            }
-        }
-
-        return this.putValueStr(cacheName, keyGen, valueStr);
+        log.info("Redis SET: key = {}, expire = {} seconds", keyGen, duration.getSeconds());
+        this.redisTemplate.opsForValue().set(keyGen, value, duration);
     }
 
-    public <T> String putObject(String key, T value) {
-        return this.putObject("", key, value);
-    }
-
-    public <T> String putObjectAsList(String cacheName, String key, List<T> valueList) {
-        String keyGen = this.keyGen(cacheName, key);
-        log.info("RedisCacheTemplate put: cacheName = {}, key = {}, value = {}", cacheName, keyGen, valueList);
-
-        String valueStr;
-        try {
-            valueStr = om.writeValueAsString(valueList);
-        } catch (JsonProcessingException var7) {
-            var7.printStackTrace();
-            log.info("Invalid value format, value: {}", valueList);
-            return null;
-        }
-
-        return this.putValueStr(cacheName, keyGen, valueStr);
-    }
-
-    public <T> String putObjectAsList(String key, List<T> valueList) {
-        return this.putObjectAsList("", key, valueList);
-    }
-
-    public <T> String putObjectToList(String cacheName, String key, T value) {
-        String keyGen = this.keyGen(cacheName, key);
-        log.info("RedisCacheTemplate putObjectToList: cacheName = {}, key = {}, value = {}", cacheName, keyGen, value);
-        String valueStr;
-        if (value instanceof String) {
-            valueStr = (String)value;
-        } else {
-            try {
-                valueStr = om.writeValueAsString(value);
-            } catch (JsonProcessingException var7) {
-                var7.printStackTrace();
-                log.info("Invalid value format, value: {}", value);
-                return null;
-            }
-        }
-
-        this.redisTemplate.opsForList().leftPush(keyGen, valueStr);
-        return valueStr;
-    }
-
-    public <T> String putObjectToList(String key, T value) {
-        return this.putObjectToList("", key, value);
+    public void putObject(String key, Object value, Duration duration) {
+        this.putObject("", key, value, duration);
     }
 
     public boolean hasKey(String cacheName, String key) {
         String keyGen = this.keyGen(cacheName, key);
-        Boolean p = this.redisTemplate.hasKey(keyGen);
-        return p != null && p;
+        log.info("Redis EXISTS: key = {}", keyGen);
+        Boolean result = this.redisTemplate.hasKey(keyGen);
+        return result != null && result;
     }
 
     public boolean hasKey(String key) {
@@ -203,39 +88,59 @@ public class RedisCacheTemplate implements ExternalCacheTemplate {
 
     public void invalidate(String cacheName, String key) {
         String keyGen = this.keyGen(cacheName, key);
-        log.info("RedisCacheTemplate invalidate: cacheName = {}, key = {}", cacheName, keyGen);
-        this.redisConnection.del(keyGen.getBytes(StandardCharsets.UTF_8));
+        log.info("Redis DEL: key = {}", keyGen);
+        Boolean result = redisTemplate.delete(keyGen);
+
+        if (Boolean.TRUE.equals(result)) {
+            log.info("invalidate key = {} successful", keyGen);
+        } else {
+            log.warn("invalidate key = {} failed !", keyGen);
+        }
     }
 
     public void invalidate(String key) {
         this.invalidate("", key);
     }
 
-    private Set<String> keySetStandalone(String keyPattern, long count) {
-        Set<String> set = new HashSet<>();
-        ScanOptions options = ScanOptions.scanOptions().match(keyPattern).count(count).build();
-        Cursor<byte[]> c = this.redisConnection.scan(options);
-        log.info("RedisCacheTemplate keySet({}, {}) = {", keyPattern, count);
+    public Set<String> keySet(String keyPattern) {
+        log.info("Redis SCAN: count = {}, match keyPattern = {} ", props.getScanLimit(), keyPattern);
+        Set<String> result = props.isCluster() ? this.keySetCluster(keyPattern) : this.keySetStandalone(keyPattern);
+        log.info("Total key match: {}", result.size());
+        return result;
+    }
 
-        while(c.hasNext()) {
-            String key = new String(c.next());
-            set.add(key);
-            log.info(key);
+    private long getExpireSecondsConfig(String cacheName) {
+        if (!CollectionUtils.isEmpty(props.getCacheExpirations()) && props.getCacheExpirations().get(cacheName) != null) {
+            return props.getCacheExpirations().get(cacheName);
+        } else if (props.getCacheDefaultExpiration() != null) {
+            return props.getCacheDefaultExpiration();
         }
 
-        log.info("}");
-        return set;
+        return -1;
+    }
+
+    private Set<String> keySetStandalone(String keyPattern) {
+        Set<String> keys = new HashSet<>();
+        ScanOptions options = ScanOptions.scanOptions().match(keyPattern).count(props.getScanLimit()).build();
+        Cursor<byte[]> cursor = this.redisConnection.scan(options);
+
+        while(cursor.hasNext()) {
+            String key = new String(cursor.next());
+            keys.add(key);
+        }
+
+        return keys;
     }
 
     private Set<String> keySetCluster(String keyPattern) {
-        LettuceConnectionFactory lettuceConnectionFactory = null;
-        LettuceClusterConnection con = (LettuceClusterConnection) lettuceConnectionFactory.getClusterConnection();
+        LettuceClusterConnection con = (LettuceClusterConnection) redisConnectionFactory.getClusterConnection();
         RedisAdvancedClusterAsyncCommands<byte[], byte[]> nativeConnection = (RedisAdvancedClusterAsyncCommands) con.getNativeConnection();
         RedisAdvancedClusterCommands<byte[], byte[]> sync = nativeConnection.getStatefulConnection().sync();
         KeyScanCursor<byte[]> scanCursor = null;
         ScanArgs scanArgs = new ScanArgs();
         scanArgs.match(keyPattern);
-        Set<byte[]> setByte = new HashSet<>();
+        scanArgs.limit(props.getScanLimit());
+        Set<byte[]> keys = new HashSet<>();
 
         do {
             if (scanCursor == null) {
@@ -244,13 +149,9 @@ public class RedisCacheTemplate implements ExternalCacheTemplate {
                 scanCursor = sync.scan(scanCursor, scanArgs);
             }
 
-            setByte.addAll(scanCursor.getKeys());
+            keys.addAll(scanCursor.getKeys());
         } while(!scanCursor.isFinished());
 
-        return setByte.stream().map(String::new).collect(Collectors.toSet());
-    }
-
-    public Set<String> keySet(String keyPattern, long count) {
-        return !CollectionUtils.isEmpty(this.externalCacheProp.getNodes()) ? this.keySetCluster(keyPattern) : this.keySetStandalone(keyPattern, count);
+        return keys.stream().map(String::new).collect(Collectors.toSet());
     }
 }

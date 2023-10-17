@@ -29,6 +29,9 @@ public class RedisCacheConfigurationProperties {
     @Value("${app.cache.external.cacheDefaultExpiration}")
     private Long cacheDefaultExpiration;
 
+    @Value("${app.cache.external.scanLimit}")
+    private Long scanLimit;
+
     private Map<String, Long> cacheExpirations = new HashMap<>();
 
     @Value("${app.cache.external.host}")
@@ -65,6 +68,10 @@ public class RedisCacheConfigurationProperties {
 
     public Long getCacheDefaultExpiration() {
         return cacheDefaultExpiration;
+    }
+
+    public Long getScanLimit() {
+        return scanLimit;
     }
 
     public Map<String, Long> getCacheExpirations() {

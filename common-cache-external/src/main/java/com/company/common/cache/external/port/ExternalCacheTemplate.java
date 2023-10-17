@@ -1,31 +1,20 @@
 package com.company.common.cache.external.port;
 
-import java.util.List;
-import java.util.Set;
+import java.time.Duration;
 
 public interface ExternalCacheTemplate {
 
     <T> T getObject(String key);
 
-    <T> List<T> getObjectAsList(String cacheName, String key, Class<T> objectClass);
+    <T> T getObject(String cacheName, String key);
 
-    <T> T getObjectFromList(String cacheName, String key, Class<T> objectClass);
+    void putObject(String cacheName, String key, Object value);
 
-    <T> T getObjectFromList(String key, Class<T> objectClass);
+    void putObject(String key, Object value);
 
-    <T> List<T> getObjectAsList(String key, Class<T> objectClass);
+    void putObject(String cacheName, String key, Object value, Duration duration);
 
-    <T> String putObject(String cacheName, String key, T value);
-
-    <T> String putObject(String key, T value);
-
-    <T> String putObjectAsList(String cacheName, String key, List<T> valueList);
-
-    <T> String putObjectAsList(String key, List<T> value);
-
-    <T> String putObjectToList(String cacheName, String key, T value);
-
-    <T> String putObjectToList(String key, T value);
+    void putObject(String key, Object value, Duration duration);
 
     boolean hasKey(String cacheName, String key);
 
@@ -34,6 +23,4 @@ public interface ExternalCacheTemplate {
     void invalidate(String cacheName, String key);
 
     void invalidate(String key);
-
-    Set<String> keySet(String keyPattern, long count);
 }

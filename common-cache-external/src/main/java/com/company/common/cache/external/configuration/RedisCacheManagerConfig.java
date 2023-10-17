@@ -5,7 +5,6 @@ import java.util.Map;
 import com.company.common.cache.external.customizer.RedisCacheConfigurationCustomizer;
 import com.company.common.cache.external.customizer.RedisCacheManagerCustomizer;
 import com.company.common.cache.external.customizer.RedisCacheWriterCustomizer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -17,7 +16,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -39,10 +37,9 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 )
 public class RedisCacheManagerConfig {
 
-    private RedisCacheConfigurationProperties props;
-    private RedisConnectionFactory redisConnectionFactory;
+    private final RedisCacheConfigurationProperties props;
+    private final RedisConnectionFactory redisConnectionFactory;
 
-    @Autowired
     public RedisCacheManagerConfig(RedisCacheConfigurationProperties props, RedisConnectionFactory redisConnectionFactory) {
         this.props = props;
         this.redisConnectionFactory = redisConnectionFactory;
@@ -56,8 +53,7 @@ public class RedisCacheManagerConfig {
         return (new RedisCacheManagerCustomizer(defaultRedisCacheConfiguration, redisCacheConfigurations, redisCacheWriter)).getRedisCacheManager();
     }
 
-    @Bean({"defaultRedisTemplate"})
-    @Primary
+    @Bean
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);

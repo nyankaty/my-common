@@ -24,7 +24,6 @@
         <module>common-client</module>
         <module>common-kafka</module>
         <module>common-cache-external</module>
-        <module>common-cache-internal</module>
     </modules>
 
     <properties>
