@@ -2,7 +2,7 @@ package com.company.common.cache.external.port;
 
 import java.time.Duration;
 
-public interface ExternalCacheTemplate {
+public interface CacheTemplate {
 
     <T> T getObject(String key);
 

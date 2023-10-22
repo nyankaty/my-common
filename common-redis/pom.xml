@@ -12,20 +12,16 @@
     <artifactId>common-cache-external</artifactId>
 
     <dependencies>
-        <!-- external cache lib -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>
+            <version>${spring.boot.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
+            <version>${spring.boot.version}</version>
         </dependency>
 
         <dependency>

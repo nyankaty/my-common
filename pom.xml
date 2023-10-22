@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.16</version>
+        <version>2.7.17</version>
         <relativePath/>
     </parent>
 
@@ -23,12 +23,12 @@
         <module>common-model</module>
         <module>common-client</module>
         <module>common-kafka</module>
-        <module>common-cache-external</module>
+        <module>common-redis</module>
     </modules>
 
     <properties>
         <java.version>11</java.version>
-        <spring.boot.version>2.7.16</spring.boot.version>
+        <spring.boot.version>2.7.17</spring.boot.version>
         <spring-cloud.version>2021.0.8</spring-cloud.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -65,7 +65,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
 
-        <!-- Logging dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>

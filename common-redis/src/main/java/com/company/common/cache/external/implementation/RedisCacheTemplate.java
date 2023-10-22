@@ -1,6 +1,6 @@
 package com.company.common.cache.external.implementation;
 
-import com.company.common.cache.external.port.ExternalCacheTemplate;
+import com.company.common.cache.external.port.CacheTemplate;
 import com.company.common.cache.external.properties.RedisCacheConfigurationProperties;
 import io.lettuce.core.KeyScanCursor;
 import io.lettuce.core.ScanArgs;
@@ -10,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceClusterConnection;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -29,12 +27,10 @@ import java.util.stream.Collectors;
         havingValue = "true"
 )
 @Component
-public class RedisCacheTemplate implements ExternalCacheTemplate {
+public class RedisCacheTemplate implements CacheTemplate {
 
     private static final Logger log = LoggerFactory.getLogger(RedisCacheTemplate.class);
 
-    RedisConnection redisConnection;
-    RedisConnectionFactory redisConnectionFactory;
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
     @Autowired
@@ -122,18 +118,20 @@ public class RedisCacheTemplate implements ExternalCacheTemplate {
     private Set<String> keySetStandalone(String keyPattern) {
         Set<String> keys = new HashSet<>();
         ScanOptions options = ScanOptions.scanOptions().match(keyPattern).count(props.getScanLimit()).build();
-        Cursor<byte[]> cursor = this.redisConnection.scan(options);
 
-        while(cursor.hasNext()) {
-            String key = new String(cursor.next());
-            keys.add(key);
+        try (Cursor<String> cursor = this.redisTemplate.scan(options)) {
+            while(cursor.hasNext()) {
+                keys.add(cursor.next());
+            }
+        } catch (Exception e) {
+            log.warn("Exception when scanning: {}", e.getMessage());
         }
 
         return keys;
     }
 
     private Set<String> keySetCluster(String keyPattern) {
-        LettuceClusterConnection con = (LettuceClusterConnection) redisConnectionFactory.getClusterConnection();
+        LettuceClusterConnection con = (LettuceClusterConnection) null;
         RedisAdvancedClusterAsyncCommands<byte[], byte[]> nativeConnection = (RedisAdvancedClusterAsyncCommands) con.getNativeConnection();
         RedisAdvancedClusterCommands<byte[], byte[]> sync = nativeConnection.getStatefulConnection().sync();
         KeyScanCursor<byte[]> scanCursor = null;
