@@ -1,10 +1,10 @@
-package com.company.common.cache.external.configuration;
+package com.company.common.redis.configuration;
 
 import java.util.Map;
 
-import com.company.common.cache.external.customizer.RedisCacheConfigurationCustomizer;
-import com.company.common.cache.external.customizer.RedisCacheManagerCustomizer;
-import com.company.common.cache.external.customizer.RedisCacheWriterCustomizer;
+import com.company.common.redis.customizer.RedisCacheConfigurationCustomizer;
+import com.company.common.redis.customizer.RedisCacheManagerCustomizer;
+import com.company.common.redis.customizer.RedisCacheWriterCustomizer;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import com.company.common.cache.external.properties.RedisCacheConfigurationProperties;
+import com.company.common.redis.properties.RedisCacheConfigurationProperties;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;

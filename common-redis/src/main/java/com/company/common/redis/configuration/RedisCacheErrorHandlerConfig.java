@@ -1,4 +1,4 @@
-package com.company.common.cache.external.configuration;
+package com.company.common.redis.configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

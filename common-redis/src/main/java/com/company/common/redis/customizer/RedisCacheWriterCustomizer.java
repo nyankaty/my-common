@@ -1,4 +1,4 @@
-package com.company.common.cache.external.customizer;
+package com.company.common.redis.customizer;
 
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;

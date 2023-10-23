@@ -1,4 +1,4 @@
-package com.company.common.cache.external.port;
+package com.company.common.redis.port;
 
 import java.time.Duration;
 

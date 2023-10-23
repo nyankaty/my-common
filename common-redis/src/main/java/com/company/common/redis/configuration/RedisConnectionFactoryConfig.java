@@ -1,6 +1,6 @@
-package com.company.common.cache.external.configuration;
+package com.company.common.redis.configuration;
 
-import com.company.common.cache.external.properties.RedisCacheConfigurationProperties;
+import com.company.common.redis.properties.RedisCacheConfigurationProperties;
 import io.lettuce.core.ReadFrom;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

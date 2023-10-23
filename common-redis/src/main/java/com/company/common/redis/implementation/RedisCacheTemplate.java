@@ -1,7 +1,7 @@
-package com.company.common.cache.external.implementation;
+package com.company.common.redis.implementation;
 
-import com.company.common.cache.external.port.CacheTemplate;
-import com.company.common.cache.external.properties.RedisCacheConfigurationProperties;
+import com.company.common.redis.port.CacheTemplate;
+import com.company.common.redis.properties.RedisCacheConfigurationProperties;
 import io.lettuce.core.KeyScanCursor;
 import io.lettuce.core.ScanArgs;
 import io.lettuce.core.cluster.api.async.RedisAdvancedClusterAsyncCommands;

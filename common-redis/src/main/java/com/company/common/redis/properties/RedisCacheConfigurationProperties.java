@@ -1,4 +1,4 @@
-package com.company.common.cache.external.properties;
+package com.company.common.redis.properties;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
