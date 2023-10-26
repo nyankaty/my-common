@@ -1,66 +1,67 @@
 package com.company.common.redis.configuration;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import com.company.common.redis.customizer.RedisCacheConfigurationCustomizer;
-import com.company.common.redis.customizer.RedisCacheManagerCustomizer;
-import com.company.common.redis.customizer.RedisCacheWriterCustomizer;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
-import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import com.company.common.redis.properties.CacheConfigurationProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import com.company.common.redis.properties.RedisCacheConfigurationProperties;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.util.StringUtils;
 
 @ConditionalOnProperty(
-        value = {"app.cache.external.enable"},
+        value = {"spring.redis.enabled"},
         havingValue = "true"
 )
-@Configuration
 @EnableCaching
-@ComponentScan({"com.company.common"})
-@ConfigurationPropertiesScan({"com.company.common.cache.external.properties"})
-@EnableAutoConfiguration(
-        exclude = {FreeMarkerAutoConfiguration.class, RedisAutoConfiguration.class, CacheAutoConfiguration.class}
-)
-public class RedisCacheManagerConfig {
+@Configuration
+public class RedisCacheManagerConfig  {
 
-    private final RedisCacheConfigurationProperties props;
+    private final CacheConfigurationProperties props;
     private final RedisConnectionFactory redisConnectionFactory;
 
-    public RedisCacheManagerConfig(RedisCacheConfigurationProperties props, RedisConnectionFactory redisConnectionFactory) {
+    public RedisCacheManagerConfig(CacheConfigurationProperties props, RedisConnectionFactory redisConnectionFactory) {
         this.props = props;
         this.redisConnectionFactory = redisConnectionFactory;
     }
 
     @Bean
     public CacheManager redisCacheManager() {
-        RedisCacheWriter redisCacheWriter = (new RedisCacheWriterCustomizer(redisConnectionFactory)).getRedisCacheWriter(true);
-        RedisCacheConfiguration defaultRedisCacheConfiguration = (new RedisCacheConfigurationCustomizer(props)).getDefaultRedisCacheConfiguration();
-        Map<String, RedisCacheConfiguration> redisCacheConfigurations = (new RedisCacheConfigurationCustomizer(props)).getRedisCacheConfigurations();
-        return (new RedisCacheManagerCustomizer(defaultRedisCacheConfiguration, redisCacheConfigurations, redisCacheWriter)).getRedisCacheManager();
+        RedisCacheManager.RedisCacheManagerBuilder builder = RedisCacheManager.RedisCacheManagerBuilder.fromCacheWriter(
+                RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory)
+        ).cacheDefaults(this.getDefaultRedisCacheConfiguration());
+
+        builder.withInitialCacheConfigurations(this.getCustomRedisCacheConfigurations());
+        return builder.build();
     }
 
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        redisTemplate.afterPropertiesSet();
+    private RedisCacheConfiguration getDefaultRedisCacheConfiguration() {
+        return RedisCacheConfiguration.defaultCacheConfig().serializeValuesWith(
+                RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())
+        ).computePrefixWith(cacheName -> {
+            String prefix = props.getRedis().getKeyPrefix() + props.getDelimiter();
+            if (StringUtils.hasLength(cacheName)) {
+                prefix = prefix + cacheName + props.getDelimiter();
+            }
 
-        return redisTemplate;
+            return prefix;
+        }).entryTtl(props.getRedis().getTimeToLive());
+    }
+
+    private Map<String, RedisCacheConfiguration> getCustomRedisCacheConfigurations() {
+        return props.getCustomCache().entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> this.getDefaultRedisCacheConfiguration().entryTtl(entry.getValue().getTimeToLive())
+        ));
     }
 }

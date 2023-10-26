@@ -1,7 +1,7 @@
 package com.company.common.redis.implementation;
 
 import com.company.common.redis.port.CacheTemplate;
-import com.company.common.redis.properties.RedisCacheConfigurationProperties;
+import com.company.common.redis.properties.CacheConfigurationProperties;
 import io.lettuce.core.KeyScanCursor;
 import io.lettuce.core.ScanArgs;
 import io.lettuce.core.cluster.api.async.RedisAdvancedClusterAsyncCommands;
@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @ConditionalOnProperty(
-        value = {"app.cache.external.enable"},
+        value = {"spring.redis.enabled"},
         havingValue = "true"
 )
 @Component
@@ -31,46 +31,58 @@ public class RedisCacheTemplate implements CacheTemplate {
 
     private static final Logger log = LoggerFactory.getLogger(RedisCacheTemplate.class);
 
-    @Autowired
+    @Autowired(required = false)
     private RedisTemplate<String, Object> redisTemplate;
-    @Autowired
-    private RedisCacheConfigurationProperties props;
+    @Autowired(required = false)
+    private CacheConfigurationProperties props;
 
     private String keyGen(String cacheName, Object key) {
-        return cacheName.equals("") ? key.toString() : this.props.getApplicationShortName() + this.props.getDelimiter() + cacheName + this.props.getDelimiter() + key;
+        return cacheName.equals("") ? key.toString() : this.props.getRedis().getKeyPrefix() + this.props.getDelimiter() + cacheName + this.props.getDelimiter() + key;
     }
 
-    public <T> T getObject(String key) {
+    @Override
+    public Object getObject(String key) {
         return this.getObject("", key);
     }
 
-    public <T> T getObject(String cacheName, String key) {
+    @Override
+    public Object getObject(String cacheName, String key) {
         String keyGen = this.keyGen(cacheName, key);
         log.info("Redis GET: key = {}", keyGen);
-        return (T) redisTemplate.opsForValue().get(keyGen);
+        return redisTemplate.opsForValue().get(keyGen);
     }
 
+    @Override
     public void putObject(String cacheName, String key, Object value) {
         String keyGen = this.keyGen(cacheName, key);
-        long expireSeconds = getExpireSecondsConfig(cacheName);
-        log.info("Redis SET: key = {}, expire = {} seconds", keyGen, expireSeconds);
-        this.redisTemplate.opsForValue().set(keyGen, value, Duration.ofSeconds(expireSeconds));
+        Duration timeToLive = this.getTimeToLiveConfig(cacheName);
+        if (timeToLive != null) {
+            log.info("Redis SET: key = {}, expire = {} seconds", keyGen, timeToLive.toSeconds());
+            this.redisTemplate.opsForValue().set(keyGen, value, timeToLive);
+        } else {
+            log.info("Redis SET: key = {}, no set expire", keyGen);
+            this.redisTemplate.opsForValue().set(keyGen, value);
+        }
     }
 
+    @Override
     public void putObject(String key, Object value) {
         this.putObject("", key, value);
     }
 
+    @Override
     public void putObject(String cacheName, String key, Object value, Duration duration) {
         String keyGen = this.keyGen(cacheName, key);
-        log.info("Redis SET: key = {}, expire = {} seconds", keyGen, duration.getSeconds());
+        log.info("Redis SET: key = {}, expire = {} seconds", keyGen, duration.toSeconds());
         this.redisTemplate.opsForValue().set(keyGen, value, duration);
     }
 
+    @Override
     public void putObject(String key, Object value, Duration duration) {
         this.putObject("", key, value, duration);
     }
 
+    @Override
     public boolean hasKey(String cacheName, String key) {
         String keyGen = this.keyGen(cacheName, key);
         log.info("Redis EXISTS: key = {}", keyGen);
@@ -78,10 +90,12 @@ public class RedisCacheTemplate implements CacheTemplate {
         return result != null && result;
     }
 
+    @Override
     public boolean hasKey(String key) {
         return this.hasKey("", key);
     }
 
+    @Override
     public void invalidate(String cacheName, String key) {
         String keyGen = this.keyGen(cacheName, key);
         log.info("Redis DEL: key = {}", keyGen);
@@ -94,30 +108,32 @@ public class RedisCacheTemplate implements CacheTemplate {
         }
     }
 
+    @Override
     public void invalidate(String key) {
         this.invalidate("", key);
     }
 
-    public Set<String> keySet(String keyPattern) {
-        log.info("Redis SCAN: count = {}, match keyPattern = {} ", props.getScanLimit(), keyPattern);
-        Set<String> result = props.isCluster() ? this.keySetCluster(keyPattern) : this.keySetStandalone(keyPattern);
+    @Override
+    public Set<String> keySet(String keyPattern, long count) {
+        log.info("Redis SCAN: count = {}, match keyPattern = {} ", count, keyPattern);
+        Set<String> result = this.keySetStandalone(keyPattern, count);
         log.info("Total key match: {}", result.size());
         return result;
     }
 
-    private long getExpireSecondsConfig(String cacheName) {
-        if (!CollectionUtils.isEmpty(props.getCacheExpirations()) && props.getCacheExpirations().get(cacheName) != null) {
-            return props.getCacheExpirations().get(cacheName);
-        } else if (props.getCacheDefaultExpiration() != null) {
-            return props.getCacheDefaultExpiration();
+    private Duration getTimeToLiveConfig(String cacheName) {
+        if (!CollectionUtils.isEmpty(props.getCustomCache()) && props.getCustomCache().containsKey(cacheName)) {
+            return props.getCustomCache().get(cacheName).getTimeToLive();
+        } else if (props.getRedis().getTimeToLive() != null) {
+            return props.getRedis().getTimeToLive();
         }
 
-        return -1;
+        return null;
     }
 
-    private Set<String> keySetStandalone(String keyPattern) {
+    private Set<String> keySetStandalone(String keyPattern, long count) {
         Set<String> keys = new HashSet<>();
-        ScanOptions options = ScanOptions.scanOptions().match(keyPattern).count(props.getScanLimit()).build();
+        ScanOptions options = ScanOptions.scanOptions().match(keyPattern).count(count).build();
 
         try (Cursor<String> cursor = this.redisTemplate.scan(options)) {
             while(cursor.hasNext()) {
@@ -137,7 +153,7 @@ public class RedisCacheTemplate implements CacheTemplate {
         KeyScanCursor<byte[]> scanCursor = null;
         ScanArgs scanArgs = new ScanArgs();
         scanArgs.match(keyPattern);
-        scanArgs.limit(props.getScanLimit());
+        scanArgs.limit(1000);
         Set<byte[]> keys = new HashSet<>();
 
         do {

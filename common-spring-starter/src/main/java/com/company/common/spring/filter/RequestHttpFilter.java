@@ -26,7 +26,7 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 @Configuration
 @Order(1)
 @ConditionalOnProperty(
-        value = {"app.log-request-http"},
+        value = {"app.log.log-request-http"},
         havingValue = "true"
 )
 public class RequestHttpFilter extends OncePerRequestFilter {

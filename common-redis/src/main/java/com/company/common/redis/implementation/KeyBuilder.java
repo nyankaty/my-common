@@ -11,4 +11,8 @@ public class KeyBuilder {
     public static String hash(Object target, Method method) {
         return target.getClass().getName() + "." + method.getName() + "()";
     }
+
+    private KeyBuilder() {
+        throw new IllegalStateException("Utility class");
+    }
 }

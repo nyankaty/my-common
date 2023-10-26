@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @Aspect
 @Configuration
 @ConditionalOnProperty(
-        value = {"app.time-trace-enabled"},
+        value = {"app.log.time-trace-enabled"},
         havingValue = "true"
 )
 public class TimeTraceAOP {

@@ -1,12 +1,13 @@
 package com.company.common.redis.port;
 
 import java.time.Duration;
+import java.util.Set;
 
 public interface CacheTemplate {
 
-    <T> T getObject(String key);
+    Object getObject(String key);
 
-    <T> T getObject(String cacheName, String key);
+    Object getObject(String cacheName, String key);
 
     void putObject(String cacheName, String key, Object value);
 
@@ -23,4 +24,6 @@ public interface CacheTemplate {
     void invalidate(String cacheName, String key);
 
     void invalidate(String key);
+
+    Set<String> keySet(String keyPattern, long count);
 }

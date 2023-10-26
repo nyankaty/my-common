@@ -1,39 +1,41 @@
 package com.company.common.redis.configuration;
 
-import com.company.common.redis.properties.RedisCacheConfigurationProperties;
+import com.company.common.redis.properties.RedisConfigurationProperties;
 import io.lettuce.core.ReadFrom;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisSentinelConfiguration;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.util.CollectionUtils;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@ConditionalOnProperty(
+        value = {"spring.redis.enabled"},
+        havingValue = "true"
+)
 @Configuration
 public class RedisConnectionFactoryConfig {
 
     private static final Logger log = LoggerFactory.getLogger(RedisConnectionFactoryConfig.class);
-    RedisCacheConfigurationProperties props;
+    private final RedisConfigurationProperties props;
 
-    public RedisConnectionFactoryConfig(RedisCacheConfigurationProperties props) {
+    public RedisConnectionFactoryConfig(RedisConfigurationProperties props) {
         this.props = props;
     }
 
     @Bean
-    public RedisConnectionFactory getRedisConnectionFactory() {
-        if (props.isCluster() && !CollectionUtils.isEmpty(props.getNodes())) {
+    public LettuceConnectionFactory redisConnectionFactory() {
+        if (props.getCluster() != null) {
             return initClusterConnection();
-        } else if (props.isSentinel() && !CollectionUtils.isEmpty(props.getNodes())) {
+        } else if (props.getSentinel() != null) {
             return initSentinelConnection();
         } else {
             return initStandaloneConnection();
@@ -42,50 +44,40 @@ public class RedisConnectionFactoryConfig {
 
     private LettuceConnectionFactory initStandaloneConnection() {
         log.info("Redis Standalone: {}:{}", props.getHost(), props.getPort());
-        RedisStandaloneConfiguration redisStandaloneConfig = new RedisStandaloneConfiguration(props.getHost(), props.getPort());
-        if (StringUtils.isNotBlank(props.getUsername())) {
-            redisStandaloneConfig.setUsername(props.getUsername());
-        }
+        RedisStandaloneConfiguration standaloneConfig = new RedisStandaloneConfiguration(props.getHost(), props.getPort());
 
-        if (StringUtils.isNotBlank(props.getPassword())) {
-            redisStandaloneConfig.setPassword(RedisPassword.of(props.getPassword()));
-        }
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisStandaloneConfig);
+        standaloneConfig.setUsername(props.getUsername());
+        standaloneConfig.setPassword(RedisPassword.of(props.getPassword()));
+
+        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(standaloneConfig);
         lettuceConnectionFactory.afterPropertiesSet();
         return lettuceConnectionFactory;
     }
 
     private LettuceConnectionFactory initSentinelConnection() {
-        log.info("Redis Sentinel: {}", props.getNodes());
+        log.info("Redis Sentinel: {}", props.getSentinel().getNodes());
         LettuceClientConfiguration lettuceClientConfig = LettuceClientConfiguration.builder()
                 .readFrom(ReadFrom.REPLICA_PREFERRED)
                 .build();
-        Set<String> sentinelNodes = new HashSet<>(props.getNodes());
-        RedisSentinelConfiguration redisSentinelConfig = new RedisSentinelConfiguration(props.getSentinelMaster(), sentinelNodes);
 
-        if (StringUtils.isNotBlank(props.getUsername())) {
-            redisSentinelConfig.setUsername(props.getUsername());
-        }
+        Set<String> sentinelNodes = new HashSet<>(props.getSentinel().getNodes());
+        RedisSentinelConfiguration sentinelConfig = new RedisSentinelConfiguration(props.getSentinel().getMaster(), sentinelNodes);
+        sentinelConfig.setSentinelUsername(props.getSentinel().getUsername());
+        sentinelConfig.setSentinelPassword(RedisPassword.of(props.getSentinel().getPassword()));
 
-        if (StringUtils.isNotBlank(props.getPassword())) {
-            redisSentinelConfig.setUsername(props.getPassword());
-        }
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisSentinelConfig, lettuceClientConfig);
+        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(sentinelConfig, lettuceClientConfig);
         lettuceConnectionFactory.afterPropertiesSet();
         return lettuceConnectionFactory;
     }
 
     private LettuceConnectionFactory initClusterConnection() {
-        log.info("Redis Cluster: {}", props.getNodes());
+        log.info("Redis Cluster: {}", props.getCluster().getNodes());
         LettuceClientConfiguration lettuceClientConfig = LettuceClientConfiguration.builder().build();
-        RedisClusterConfiguration redisClusterConfig = new RedisClusterConfiguration(props.getNodes());
-        if (StringUtils.isNotBlank(props.getUsername())) {
-            redisClusterConfig.setUsername(props.getUsername());
-        }
 
-        if (StringUtils.isNotBlank(props.getPassword())) {
-            redisClusterConfig.setPassword(RedisPassword.of(props.getPassword()));
-        }
+        RedisClusterConfiguration redisClusterConfig = new RedisClusterConfiguration(props.getCluster().getNodes());
+        redisClusterConfig.setUsername(props.getUsername());
+        redisClusterConfig.setPassword(RedisPassword.of(props.getPassword()));
+
         LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisClusterConfig, lettuceClientConfig);
         lettuceConnectionFactory.afterPropertiesSet();
         return lettuceConnectionFactory;

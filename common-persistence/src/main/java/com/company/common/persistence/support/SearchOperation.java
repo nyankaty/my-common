@@ -1,4 +1,4 @@
-package com.company.common.persistence;
+package com.company.common.persistence.support;
 
 public enum SearchOperation {
     GREATER_THAN,

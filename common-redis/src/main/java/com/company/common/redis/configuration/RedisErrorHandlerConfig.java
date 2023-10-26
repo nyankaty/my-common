@@ -8,9 +8,9 @@ import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class RedisCacheErrorHandlerConfig implements CachingConfigurer {
+public class RedisErrorHandlerConfig implements CachingConfigurer {
 
-    private static final Logger log = LoggerFactory.getLogger(RedisCacheErrorHandlerConfig.class);
+    private static final Logger log = LoggerFactory.getLogger(RedisErrorHandlerConfig.class);
 
     @Override
     public CacheErrorHandler errorHandler() {

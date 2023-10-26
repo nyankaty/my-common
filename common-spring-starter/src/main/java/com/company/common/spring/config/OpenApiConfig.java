@@ -9,12 +9,15 @@ import io.swagger.v3.oas.models.security.SecurityScheme.In;
 import io.swagger.v3.oas.models.security.SecurityScheme.Type;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@EnableConfigurationProperties(SwaggerConfigurationProperties.class)
 public class OpenApiConfig {
-    final SwaggerConfigurationProperties swaggerConfigurationProperties;
+
+    private final SwaggerConfigurationProperties swaggerConfigurationProperties;
 
     public OpenApiConfig(SwaggerConfigurationProperties swaggerConfigurationProperties) {
         this.swaggerConfigurationProperties = swaggerConfigurationProperties;

@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.company.common.spring.config.AsyncConfig,\
+com.company.common.spring.config.OpenApiConfig,\
+com.company.common.spring.config.ApplicationContextProvider,\
+com.company.common.spring.config.ApplicationStartupListener,\
+com.company.common.spring.config.MainApplicationConfig

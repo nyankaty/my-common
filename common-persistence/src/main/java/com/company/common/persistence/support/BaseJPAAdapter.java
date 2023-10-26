@@ -1,4 +1,4 @@
-package com.company.common.persistence;
+package com.company.common.persistence.support;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

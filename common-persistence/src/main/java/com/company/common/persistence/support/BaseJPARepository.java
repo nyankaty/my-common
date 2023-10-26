@@ -1,4 +1,4 @@
-package com.company.common.persistence;
+package com.company.common.persistence.support;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
